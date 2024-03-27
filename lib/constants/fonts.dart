@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-
-class TextStyles {
-  const TextStyles();
-
-
-  TextStyle get h1 => const TextStyle(
+class TextStylesConstants {
+  static const TextStyle h1 = TextStyle(
     fontSize: 48,
     decoration: TextDecoration.none,
     fontStyle: FontStyle.normal,
@@ -13,7 +9,7 @@ class TextStyles {
     letterSpacing: 0,
   );
 
-  TextStyle get h2 => const TextStyle(
+  static const TextStyle h2 = TextStyle(
     fontSize: 36,
     decoration: TextDecoration.none,
     fontStyle: FontStyle.normal,
@@ -22,7 +18,7 @@ class TextStyles {
     letterSpacing: 0,
   );
 
-  TextStyle get bodyLarge => const TextStyle(
+  static const TextStyle bodyLarge = TextStyle(
     fontSize: 28,
     decoration: TextDecoration.none,
     fontStyle: FontStyle.normal,
@@ -31,7 +27,7 @@ class TextStyles {
     letterSpacing: 0,
   );
 
-  TextStyle get bodyBase => const TextStyle(
+  static const TextStyle bodyBase = TextStyle(
     fontSize: 18,
     decoration: TextDecoration.none,
     fontStyle: FontStyle.normal,
@@ -40,7 +36,7 @@ class TextStyles {
     letterSpacing: 0,
   );
 
-  TextStyle get caption => const TextStyle(
+  static const TextStyle caption = TextStyle(
     fontSize: 14,
     decoration: TextDecoration.none,
     fontStyle: FontStyle.normal,
@@ -49,4 +45,6 @@ class TextStyles {
     letterSpacing: 0,
   );
 
+  // Prevent class instantiation.
+  TextStylesConstants._();
 }

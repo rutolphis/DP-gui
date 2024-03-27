@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gui_flutter/constants/colors.dart';
 import 'package:gui_flutter/pages/home/home.dart';
 import 'package:gui_flutter/pages/settings/settings.dart';
 
@@ -28,8 +29,12 @@ class _NavigationWidgetState extends State<NavigationWidget> {
         children: _screens,
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: ColorConstants.secondary,
+        selectedItemColor: ColorConstants.primary,
         currentIndex: _currentIndex,
         onTap: _onItemTapped,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),

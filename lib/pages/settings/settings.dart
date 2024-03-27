@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gui_flutter/pages/settings/widgets/emergency_contact.dart';
+import 'package:gui_flutter/pages/settings/widgets/emergency_contacts.dart';
+import 'package:gui_flutter/pages/settings/widgets/settings_container.dart';
 import 'package:gui_flutter/widgets/page.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -6,6 +9,12 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PageWidget(title: "Settings", body: Container());
+    return PageWidget(
+        title: "Settings",
+        body: Column(
+          children: [
+            EmergencyContactsWidget()
+          ],
+        ));
   }
 }
