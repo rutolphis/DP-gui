@@ -16,12 +16,12 @@ class EmergencyContactDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(8.0)),
       ),
       surfaceTintColor: Colors.transparent,
       backgroundColor: ColorConstants.white,
-      contentPadding: EdgeInsets.all(24),
+      contentPadding: const EdgeInsets.all(24),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -29,20 +29,20 @@ class EmergencyContactDialog extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(title, style: TextStylesConstants.h2,),
-              SizedBox(width: 40,),
+              const SizedBox(width: 40,),
               InkWell(
                 borderRadius: BorderRadius.circular(100),
                 onTap: () {
                   Navigator.of(context).pop(); // Closes the dialog
                 },
-                child: CircleAvatar(
-                  child: Icon(Icons.close, color: Colors.white,size: 30,),
+                child: const CircleAvatar(
                   backgroundColor: ColorConstants.black,
+                  child: Icon(Icons.close, color: Colors.white,size: 30,),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 32),
+          const SizedBox(height: 32),
           Form(
             key: _formKey,
             child: Column(
@@ -58,7 +58,7 @@ class EmergencyContactDialog extends StatelessWidget {
                     return null;
                   },
                 ),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
                 CustomTextFieldWidget(
                   controller: _phoneController,
                   hintText: 'Phone Number',
@@ -70,13 +70,13 @@ class EmergencyContactDialog extends StatelessWidget {
                     return null;
                   },
                 ),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
                 ElevatedButton(
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(ColorConstants.primary),
                       padding: MaterialStateProperty.resolveWith<EdgeInsetsGeometry>(
                             (Set<MaterialState> states) {
-                          return EdgeInsets.all(20);
+                          return const EdgeInsets.all(20);
                         },
                       ),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(

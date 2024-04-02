@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
+import 'package:gui_flutter/bloc/emergency_contacts/emergency_contacts_bloc.dart';
 import 'package:gui_flutter/constants/colors.dart';
+import 'package:gui_flutter/pages/initiliazation/initialization.dart';
 import 'package:gui_flutter/widgets/navigation.dart';
 
 void main() {
@@ -12,7 +16,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MultiBlocProvider(
+        providers: [
+        BlocProvider<EmergencyContactsBloc>(
+        create: (context) => EmergencyContactsBloc(),
+    ),
+    ],
+    child:MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -33,8 +43,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: ColorConstants.white),
         useMaterial3: true,
       ),
-      home: NavigationWidget(),
-    );
+      home: InitializationPage(child: NavigationWidget(),),
+    ));
   }
 }
 

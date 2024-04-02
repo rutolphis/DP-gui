@@ -16,7 +16,8 @@ class PageWidget extends StatelessWidget {
       backgroundColor: ColorConstants.white,
       body: Padding(
         padding: const EdgeInsets.all(40.0),
-        child: Column(
+        child: ListView(
+          clipBehavior: Clip.none,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

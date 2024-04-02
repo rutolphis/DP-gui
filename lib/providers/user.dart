@@ -3,14 +3,14 @@ import 'package:gui_flutter/models/emergency_contacts.dart';
 import 'package:gui_flutter/models/options.dart';
 import 'package:gui_flutter/models/personal_info.dart';
 
-class UserProvider {
+class UserData {
   String vin;
   PersonalInfo personalInfo;
   CarStats carStats;
   EmergencyContacts emergencyContacts;
   Options options;
 
-  UserProvider({
+  UserData({
     required this.vin,
     required this.personalInfo,
     required this.carStats,
@@ -26,8 +26,8 @@ class UserProvider {
     'options': options.toJson(),
   };
 
-  factory UserProvider.fromJson(Map<String, dynamic> json) {
-    return UserProvider(
+  factory UserData.fromJson(Map<String, dynamic> json) {
+    return UserData(
       vin: json['vin'],
       personalInfo: PersonalInfo.fromJson(json['personalInfo']),
       carStats: CarStats.fromJson(json['carStats']),

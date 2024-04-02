@@ -28,7 +28,7 @@ class CustomTextFieldWidget extends StatelessWidget {
       style: TextStylesConstants.bodyBase,
       decoration: InputDecoration(
         hintText: hintText,
-        contentPadding: EdgeInsets.symmetric(vertical: 25.0, horizontal: 30.0),
+        contentPadding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 15.0),
         border: OutlineInputBorder(
           borderRadius: borderRadius,
           borderSide: BorderSide(width: 1, color: Colors.grey.shade300),

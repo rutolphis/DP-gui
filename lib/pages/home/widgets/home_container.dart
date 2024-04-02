@@ -6,14 +6,16 @@ class HomeContainerWidget extends StatelessWidget {
   final Widget child;
   final String? title;
   final EdgeInsets? padding;
+  final double? height;
 
   const HomeContainerWidget(
-      {Key? key, required this.child, this.title, this.padding})
+      {Key? key, required this.child, this.title, this.padding, this.height})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: height,
       padding: padding ?? const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: ColorConstants.secondary,
@@ -45,14 +47,15 @@ class HomeContainerWidget extends StatelessWidget {
       ),
       child: Column(
         children: [
-          title != null ? Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              title!,
-              style:
-                  TextStylesConstants.h2.copyWith(color: const Color(0xff878C99)),
-            ),
-          ) : Container(),
+          if (title != null)
+              Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    title!,
+                    style: TextStylesConstants.h2
+                        .copyWith(color: const Color(0xff878C99)),
+                  ),
+                ),
           child
         ],
       ),

@@ -3,7 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gui_flutter/constants/colors.dart';
 import 'package:gui_flutter/constants/fonts.dart';
-import 'package:gui_flutter/pages/settings/widgets/emergency_contact_dialog.dart';
+import 'package:gui_flutter/pages/settings/widgets/emergency_contacts/emergency_contact_dialog.dart';
 import 'package:gui_flutter/widgets/text_field.dart';
 
 class EmergencyContactWidget extends StatelessWidget {
@@ -24,7 +24,7 @@ class EmergencyContactWidget extends StatelessWidget {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return EmergencyContactDialog(title: 'Edit Emergency Contact', onSubmit: (String name, String phone) {  }, submit: 'Edit Emergency Contact',);
+        return EmergencyContactDialog(title: 'Edit Emergency Contact', onSubmit: (String name, String phone) {  }, submit: 'Save changes',);
       },
     );
   }
