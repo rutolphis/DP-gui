@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gui_flutter/pages/home/widgets/car_stats.dart';
 import 'package:gui_flutter/pages/home/widgets/map.dart';
+import 'package:gui_flutter/pages/home/widgets/speed.dart';
 import 'package:gui_flutter/pages/home/widgets/stats_item.dart';
 import 'package:gui_flutter/pages/home/bluetooth/bluetooth_connect_dialog.dart';
 import 'package:gui_flutter/widgets/button.dart';
@@ -60,10 +61,7 @@ class HomePage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  HomeContainerWidget(
-                    title: "Speed",
-                    child: Text("flutter"),
-                  ),
+                  SpeedWidget()
                 ],
               ),
             ),

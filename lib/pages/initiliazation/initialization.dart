@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gui_flutter/bloc/emergency_contacts/emergency_contacts_bloc.dart';
+import 'package:gui_flutter/bloc/personal_info/personal_info_bloc.dart';
+import 'package:gui_flutter/bloc/personal_info/personal_info_event.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../../bloc/emergency_contacts/emergency_contacts_event.dart';
@@ -19,79 +21,75 @@ class _InitializationPageState extends State<InitializationPage> {
   Timer? _initializationTimeout;
   bool isInitialized = false;
   bool shouldAttemptConnection = true;
+  bool isConnected = false; // Add a flag to track connection status
 
   @override
   void initState() {
     super.initState();
     _attemptConnection();
     context.read<EmergencyContactsBloc>().add(LoadEmergencyContacts());
+    context.read<PersonalInfoBloc>().add(LoadPersonalInfo());
   }
 
   void _attemptConnection() {
     setState(() {
-      shouldAttemptConnection = false; // Attempting to connect, hide button
+      isConnected = false;
+      isInitialized = false;
     });
 
     socket = IO.io('http://127.0.0.1:6000', <String, dynamic>{
       'transports': ['websocket'],
+      'autoConnect': false,
+      'query': 'type=frontend',
     });
 
     socket.onConnect((_) {
-      print('Connected');
-      _setInitializationTimeout(); // Set a timeout for the initialization
+      setState(() {
+        isConnected = true;
+      });
+      _requestInitialization();
     });
 
-    socket.on('message', (data) {
-      if (data['status'] == 'initialized') {
-        _initializationTimeout?.cancel(); // Initialization successful, cancel timeout
+    socket.onDisconnect((_) {
+      setState(() {
+        isConnected = false;
+      });
+    });
+
+    socket.on('initialized', (data) {
+      if (data['vin'] != null) {
         setState(() {
           isInitialized = true;
         });
       }
     });
 
-    socket.onDisconnect((_) {
-      print('Disconnected');
-      _resetConnectionState(); // Reset state on disconnect
-    });
-
-    socket.onConnectError((data) {
-      print('Connection error: $data');
-      _resetConnectionState(); // Reset state on connection error
-    });
-
     socket.connect();
   }
 
-  void _setInitializationTimeout() {
-    _initializationTimeout = Timer(Duration(seconds: 10), () {
-      if (!isInitialized) {
-        print('Initialization timeout');
-        _resetConnectionState(); // Reset state on timeout
-      }
-    });
-  }
-
-  void _resetConnectionState() {
-    if (!mounted) return;
-    setState(() {
-      shouldAttemptConnection = true;
-      isInitialized = false; // Ensures "Try Again" button shows after disconnect
-    });
+  void _requestInitialization() {
+    if (isConnected) {
+      socket.emit('init', {'request': 'initialization'});
+    } else {
+      _attemptConnection(); // Attempt to connect if not connected
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: isInitialized
+        child: isInitialized && isConnected
             ? widget.child
-            : shouldAttemptConnection
+            : isConnected
             ? ElevatedButton(
-          onPressed: _attemptConnection,
-          child: Text('Try Again'),
+          onPressed: _requestInitialization,
+          child: const Text('Initialize'),
         )
-            : CircularProgressIndicator(),
+            : ElevatedButton(
+          onPressed: _attemptConnection,
+          child: const Text('Connect'),
+        ),
       ),
     );
   }

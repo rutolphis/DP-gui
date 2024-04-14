@@ -9,6 +9,7 @@ import 'package:gui_flutter/models/contact.dart';
 import 'package:gui_flutter/pages/settings/widgets/settings_container.dart';
 import 'package:gui_flutter/widgets/button.dart';
 
+import '../../../../bloc/emergency_contacts/emergency_contacts_event.dart';
 import 'emergency_contact.dart';
 import 'emergency_contact_dialog.dart';
 
@@ -23,6 +24,7 @@ class EmergencyContactsWidget extends StatefulWidget {
 class _EmergencyContactsWidgetState extends State<EmergencyContactsWidget> {
   List<Widget> list1 = [];
   List<Widget> list2 = [];
+  List<Contact> contacts = [];
 
   @override
   void initState() {
@@ -30,7 +32,7 @@ class _EmergencyContactsWidgetState extends State<EmergencyContactsWidget> {
     super.initState();
   }
 
-  void distributeContacts(List<Contact> contacts) {
+  void _distributeContacts(List<Contact> contacts) {
     // Clear lists before repopulating
     list1.clear();
     list2.clear();
@@ -39,20 +41,17 @@ class _EmergencyContactsWidgetState extends State<EmergencyContactsWidget> {
     for (int i = 0; i < contacts.length; i++) {
       if (i % 2 == 0) {
         list1.add(EmergencyContactWidget(
-          text1: contacts[i].name,
-          text2: contacts[i].phone,
-          onEdit: () {},
-          onDelete: () {},
+          name: contacts[i].name,
+          phone: contacts[i].phone, contactIndex: i,
         ));
         list1.add(const SizedBox(
           height: 24,
         ));
       } else {
         list2.add(EmergencyContactWidget(
-          text1: contacts[i].name,
-          text2: contacts[i].phone,
-          onEdit: () {},
-          onDelete: () {},
+          contactIndex: i,
+          name: contacts[i].name,
+          phone: contacts[i].phone,
         ));
         list2.add(const SizedBox(
           height: 24,
@@ -67,7 +66,6 @@ class _EmergencyContactsWidgetState extends State<EmergencyContactsWidget> {
       builder: (BuildContext context) {
         return EmergencyContactDialog(
           title: 'Add Emergency Contact',
-          onSubmit: (String name, String phone) {},
           submit: 'Add contact',
         );
       },
@@ -81,12 +79,12 @@ class _EmergencyContactsWidgetState extends State<EmergencyContactsWidget> {
         child: BlocBuilder<EmergencyContactsBloc, EmergencyContactsState>(
             builder: (context, state) {
               if (state is EmergencyContactsLoaded) {
-
-                distributeContacts(state.contacts);
+                contacts = state.contacts;
+                _distributeContacts(contacts);
 
                 return Column(
                   children: [
-                    list1.isNotEmpty && list2.isNotEmpty
+                    list1.isNotEmpty || list2.isNotEmpty
                         ? Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -134,7 +132,7 @@ class _EmergencyContactsWidgetState extends State<EmergencyContactsWidget> {
                     const SizedBox(
                       height: 32,
                     ),
-                    if (list1.isNotEmpty && list2.isNotEmpty)
+                    if (list1.isNotEmpty || list2.isNotEmpty)
                       Align(
                           alignment: Alignment.centerRight,
                           child: IconButton(

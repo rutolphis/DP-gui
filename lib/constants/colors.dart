@@ -10,5 +10,6 @@ class ColorConstants {
   static const Color fifth = Color(0xffdaa49a);
   static const Color white = Color(0xffffffff);
   static const Color black = Color(0xff1e1e1e);
+  static const Color grey = Color(0xff878C99);
 
 }

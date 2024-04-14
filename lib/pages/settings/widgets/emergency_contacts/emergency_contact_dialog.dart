@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gui_flutter/bloc/emergency_contacts/emergency_contacts_bloc.dart';
+import 'package:gui_flutter/bloc/emergency_contacts/emergency_contacts_event.dart';
 import 'package:gui_flutter/constants/colors.dart';
 import 'package:gui_flutter/constants/fonts.dart';
+import 'package:gui_flutter/models/contact.dart';
 import 'package:gui_flutter/widgets/text_field.dart';
 
 class EmergencyContactDialog extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final String? name;
+  final String? phone;
   final String title; // Parameter for dynamic name content
   final String submit;
-  final Function(String name, String phone) onSubmit; // Callback function for form submission
+  final int? contactIndex;
 
-  EmergencyContactDialog({Key? key, required this.title, required this.onSubmit, required this.submit}) : super(key: key);
+  EmergencyContactDialog({Key? key, required this.title, required this.submit, this.name, this.phone, this.contactIndex}) : super(key: key) {
+  // Assign the initial values to the text controllers
+  _nameController.text = name ?? ''; // If name is null, default to an empty string
+  _phoneController.text = phone ?? ''; // If phone is null, default to an empty string
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -87,11 +98,42 @@ class EmergencyContactDialog extends StatelessWidget {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      onSubmit(_nameController.text, _phoneController.text);
+                      if(name == '' || name == null) {
+                        context.read<EmergencyContactsBloc>().add(
+                          AddEmergencyContact(Contact(name: _nameController.text, phone: _phoneController.text)),
+                        );
+                      } else {
+                        final updatedContact = Contact(name: _nameController.text, phone: _phoneController.text);
+                        context.read<EmergencyContactsBloc>().add(
+                          UpdateEmergencyContact(contactIndex!, updatedContact),
+                        );
+                      }
                       Navigator.of(context).pop();
                     }
                   },
                   child: Text(submit, style: TextStylesConstants.bodyBase.copyWith(color: ColorConstants.white),),
+                ),
+                const SizedBox(height: 24,),
+                if(name != null && name != '')
+                ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                      padding: MaterialStateProperty.resolveWith<EdgeInsetsGeometry>(
+                            (Set<MaterialState> states) {
+                          return const EdgeInsets.all(20);
+                        },
+                      ),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          )
+                      )
+                  ),
+                  onPressed: () {
+                    context.read<EmergencyContactsBloc>().add(DeleteEmergencyContact(contactIndex!));
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Delete contact", style: TextStylesConstants.bodyBase.copyWith(color: ColorConstants.white),),
                 ),
               ],
             ),

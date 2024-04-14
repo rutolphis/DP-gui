@@ -1,38 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gui_flutter/bloc/personal_info/personal_info_bloc.dart';
+import 'package:gui_flutter/bloc/personal_info/personal_info_event.dart';
 import 'package:gui_flutter/constants/colors.dart';
 import 'package:gui_flutter/constants/fonts.dart';
+import 'package:gui_flutter/models/adress.dart';
+import 'package:gui_flutter/models/personal_info.dart';
 import 'package:gui_flutter/widgets/text_field.dart';
 
 class PersonalInformationDialog extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController;
-  final TextEditingController _phoneController;
   final TextEditingController _addressController;
   final TextEditingController _bloodGroupController;
   final TextEditingController _insuranceCompanyController;
-
+  final PersonalInfo? personalInfo;
   final String title; // Parameter for dynamic name content
   final String submit;
-  final Function(String name, String phone, String address, String bloodGroup, String insuranceCompany) onSubmit; // Updated callback function for form submission
 
   PersonalInformationDialog({
     Key? key,
     required this.title,
-    required this.onSubmit,
     required this.submit,
-    String? name, // Optional parameters for initial data
-    String? phone,
-    String? address,
-    String? bloodGroup,
-    String? insuranceCompany,
-  })
-      : _nameController = TextEditingController(text: name),
-        _phoneController = TextEditingController(text: phone),
-        _addressController = TextEditingController(text: address ?? ''),
-  // Initialize with provided data or empty string
-        _bloodGroupController = TextEditingController(text: bloodGroup ?? ''),
-        _insuranceCompanyController = TextEditingController(
-            text: insuranceCompany ?? ''),
+    this.personalInfo,
+  })  : _nameController = TextEditingController(text: personalInfo?.name ?? ''),
+        _addressController =
+            TextEditingController(text: personalInfo?.address.toString() ?? ''),
+        // Initialize with provided data or empty string
+        _bloodGroupController =
+            TextEditingController(text: personalInfo?.bloodGroup ?? ''),
+        _insuranceCompanyController =
+            TextEditingController(text: personalInfo?.insuranceCompany ?? ''),
         super(key: key);
 
   @override
@@ -45,16 +43,22 @@ class PersonalInformationDialog extends StatelessWidget {
       backgroundColor: Colors.white,
       // Assuming ColorConstants.white exists
       contentPadding: const EdgeInsets.all(24),
-      content: SingleChildScrollView( // Use SingleChildScrollView to avoid overflow
+      content: SingleChildScrollView(
+        // Use SingleChildScrollView to avoid overflow
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(title, style: TextStylesConstants.h2,),
+                Text(
+                  title,
+                  style: TextStylesConstants.h2,
+                ),
                 // Assuming TextStylesConstants.h2 exists
-                const SizedBox(width: 40,),
+                const SizedBox(
+                  width: 40,
+                ),
                 InkWell(
                   borderRadius: BorderRadius.circular(100),
                   onTap: () {
@@ -63,7 +67,11 @@ class PersonalInformationDialog extends StatelessWidget {
                   child: const CircleAvatar(
                     backgroundColor: Colors.black,
                     // Assuming ColorConstants.black exists
-                    child: Icon(Icons.close, color: Colors.white, size: 30,),
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 30,
+                    ),
                   ),
                 ),
               ],
@@ -77,52 +85,86 @@ class PersonalInformationDialog extends StatelessWidget {
                   // Repeated CustomTextFieldWidget for each field
                   // Name
                   CustomTextFieldWidget(
-                      controller: _nameController, hintText: 'Name'),
-                  const SizedBox(height: 16),
-                  // Phone
-                  CustomTextFieldWidget(controller: _phoneController,
-                      hintText: 'Phone Number',
-                      keyboardType: TextInputType.phone),
+                    controller: _nameController,
+                    hintText: 'Name',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a name';
+                      }
+                      return null; // Return null if the input is valid
+                    },
+                  ),
                   const SizedBox(height: 16),
                   // Address
                   CustomTextFieldWidget(
-                      controller: _addressController, hintText: 'Address'),
+                    controller: _addressController,
+                    hintText: 'Address',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter an address';
+                      }
+                      return null;
+                    },
+                  ),
                   const SizedBox(height: 16),
                   // Blood Group
-                  CustomTextFieldWidget(controller: _bloodGroupController,
-                      hintText: 'Blood Group'),
+                  CustomTextFieldWidget(
+                    controller: _bloodGroupController,
+                    hintText: 'Blood Group',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your blood group';
+                      }
+                      return null;
+                    },
+                  ),
                   const SizedBox(height: 16),
                   // Insurance Company
-                  CustomTextFieldWidget(controller: _insuranceCompanyController,
-                      hintText: 'Insurance Company'),
+                  CustomTextFieldWidget(
+                    controller: _insuranceCompanyController,
+                    hintText: 'Insurance Company',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the name of your insurance company';
+                      }
+                      return null;
+                    },
+                  ),
                   const SizedBox(height: 32),
                   ElevatedButton(
                     style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(ColorConstants.primary),
-                        padding: MaterialStateProperty.resolveWith<EdgeInsetsGeometry>(
-                              (Set<MaterialState> states) {
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            ColorConstants.primary),
+                        padding: MaterialStateProperty.resolveWith<
+                            EdgeInsetsGeometry>(
+                          (Set<MaterialState> states) {
                             return const EdgeInsets.all(20);
                           },
                         ),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            )
-                        )
-                    ),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ))),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        onSubmit(
-                            _nameController.text,
-                            _phoneController.text,
-                            _addressController.text,
-                            _bloodGroupController.text,
-                            _insuranceCompanyController.text
-                        );
+                        PersonalInfo updatedPersonalInfo = PersonalInfo(
+                            name: _nameController.text,
+                            address: Address(
+                                street: '', city: '', zipCode: '', country: ''),
+                            bloodGroup: _bloodGroupController.text,
+                            insuranceCompany: _insuranceCompanyController.text);
+                        context
+                            .read<PersonalInfoBloc>()
+                            .add(UpdatePersonalInfo(updatedPersonalInfo));
                         Navigator.of(context).pop();
                       }
                     },
-                    child: Text(submit, style: TextStylesConstants.bodyBase.copyWith(color: ColorConstants.white),), // Assuming TextStylesConstants.bodyBase exists
+                    child: Text(
+                      submit,
+                      style: TextStylesConstants.bodyBase
+                          .copyWith(color: ColorConstants.white),
+                    ), // Assuming TextStylesConstants.bodyBase exists
                   ),
                 ],
               ),

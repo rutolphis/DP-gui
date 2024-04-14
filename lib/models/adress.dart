@@ -18,6 +18,11 @@ class Address {
     'country': country,
   };
 
+  @override
+  String toString() {
+    return '$street, $city, $zipCode, $country';
+  }
+
   factory Address.fromJson(Map<String, dynamic> json) {
     return Address(
       street: json['street'],

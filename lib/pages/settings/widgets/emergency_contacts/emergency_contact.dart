@@ -7,24 +7,21 @@ import 'package:gui_flutter/pages/settings/widgets/emergency_contacts/emergency_
 import 'package:gui_flutter/widgets/text_field.dart';
 
 class EmergencyContactWidget extends StatelessWidget {
-  final String text1;
-  final String text2;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
+  final String name;
+  final String phone;
+  final int contactIndex;
 
   const EmergencyContactWidget({
     Key? key,
-    required this.text1,
-    required this.text2,
-    required this.onEdit,
-    required this.onDelete,
+    required this.name,
+    required this.phone, required this.contactIndex,
   }) : super(key: key);
 
   void _showDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return EmergencyContactDialog(title: 'Edit Emergency Contact', onSubmit: (String name, String phone) {  }, submit: 'Save changes',);
+        return EmergencyContactDialog(title: 'Edit Emergency Contact', name: name , phone: phone, submit: 'Save changes', contactIndex: contactIndex,);
       },
     );
   }
@@ -71,7 +68,7 @@ class EmergencyContactWidget extends StatelessWidget {
                     ),
                     SizedBox(width: 16),
                     Text(
-                      text1,
+                      name,
                       style: TextStylesConstants.bodyLarge
                           .copyWith(color: const Color(0xff878C99)),
                     ),
@@ -87,7 +84,7 @@ class EmergencyContactWidget extends StatelessWidget {
                     ),
                     SizedBox(width: 16),
                     Text(
-                      text2,
+                      phone,
                       style: TextStylesConstants.bodyLarge
                           .copyWith(color: const Color(0xff878C99)),
                     ),
