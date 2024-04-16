@@ -10,6 +10,9 @@ class PersonalInfoBloc extends Bloc<PersonalInfoEvent, PersonalInfoState> {
   PersonalInfoBloc() : super(PersonalInfoInitial()) {
     on<LoadPersonalInfo>(_onLoadPersonalInfo);
     on<UpdatePersonalInfo>(_onUpdatePersonalInfo);
+
+    //fetch data
+    add(LoadPersonalInfo());
   }
 
   Future<void> _onLoadPersonalInfo(

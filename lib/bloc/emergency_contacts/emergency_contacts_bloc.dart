@@ -13,6 +13,8 @@ class EmergencyContactsBloc extends Bloc<EmergencyContactsEvent, EmergencyContac
     on<UpdateEmergencyContact>(_onUpdateEmergencyContact);
     on<DeleteEmergencyContact>(_onDeleteEmergencyContact);
     on<UpdateEmergencyContacts>(_onUpdateEmergencyContacts);
+
+    add(LoadEmergencyContacts());
   }
 
   Future<void> _onLoadEmergencyContacts(
