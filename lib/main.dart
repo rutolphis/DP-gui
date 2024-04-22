@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
+import 'package:gui_flutter/bloc/bluetooth/bluetooth_bloc.dart';
 import 'package:gui_flutter/bloc/emergency_contacts/emergency_contacts_bloc.dart';
 import 'package:gui_flutter/bloc/personal_info/personal_info_bloc.dart';
 import 'package:gui_flutter/bloc/socket/socket_bloc.dart';
@@ -16,7 +17,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -29,6 +29,11 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider<SocketBloc>(
             create: (context) => SocketBloc(),
+          ),
+          BlocProvider<BluetoothBloc>(
+            create: (BuildContext context) => BluetoothBloc(
+              socketBloc: BlocProvider.of<SocketBloc>(context, listen: false),
+            ),
           ),
         ],
         child: MaterialApp(

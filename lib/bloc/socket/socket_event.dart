@@ -10,6 +10,7 @@ class RequestInitialization extends SocketEvent {}
 
 class ScanBLE extends SocketEvent {}
 
+
 class ReceiveInitialization extends SocketEvent {
   final String vin;
   ReceiveInitialization(this.vin);

@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gui_flutter/bloc/bluetooth/bluetooth_bloc.dart';
+import 'package:gui_flutter/bloc/bluetooth/bluetooth_event.dart';
+import 'package:gui_flutter/bloc/bluetooth/bluetooth_state.dart';
 import 'package:gui_flutter/bloc/socket/socket_bloc.dart';
 import 'package:gui_flutter/bloc/socket/socket_event.dart';
 import 'package:gui_flutter/constants/colors.dart';
@@ -28,7 +31,7 @@ class _DeviceSearchPageState extends State<DeviceSearchPage>
   void initState() {
     super.initState();
     _circleAnimation();
-    context.read<SocketBloc>().add(ScanBLE());
+    context.read<BluetoothBloc>().add(BluetoothScan());
   }
 
   void _circleAnimation() {
@@ -43,38 +46,34 @@ class _DeviceSearchPageState extends State<DeviceSearchPage>
     );
 
     // Size animations
-    _animationSize1 = Tween<double>(begin: 120.0, end: 360.0).animate(
-        CurvedAnimation(
+    _animationSize1 =
+        Tween<double>(begin: 120.0, end: 360.0).animate(CurvedAnimation(
           parent: _animationController1,
           curve: Curves.easeInOut,
           reverseCurve: Curves.easeInOut,
-        )
-    );
+        ));
 
-    _animationSize2 = Tween<double>(begin: 120.0, end: 360.0).animate(
-        CurvedAnimation(
+    _animationSize2 =
+        Tween<double>(begin: 120.0, end: 360.0).animate(CurvedAnimation(
           parent: _animationController2,
           curve: Curves.easeInOut,
           reverseCurve: Curves.easeInOut,
-        )
-    );
+        ));
 
     // Opacity animations
-    _animationOpacity1 = Tween<double>(begin: 0.0, end: 0.6).animate(
-        CurvedAnimation(
+    _animationOpacity1 =
+        Tween<double>(begin: 0.0, end: 0.6).animate(CurvedAnimation(
           parent: _animationController1,
           curve: Curves.easeInOut,
           reverseCurve: Curves.easeInOut,
-        )
-    );
+        ));
 
-    _animationOpacity2 = Tween<double>(begin: 0.0, end: 0.6).animate(
-        CurvedAnimation(
+    _animationOpacity2 =
+        Tween<double>(begin: 0.0, end: 0.6).animate(CurvedAnimation(
           parent: _animationController2,
           curve: Curves.easeInOut,
           reverseCurve: Curves.easeInOut,
-        )
-    );
+        ));
 
     _animationController1.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -109,63 +108,84 @@ class _DeviceSearchPageState extends State<DeviceSearchPage>
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
           "Searching for devices",
           style: TextStylesConstants.h2,
         ),
-        SizedBox(height: 50),
-        SizedBox(
-          height: 360,
-          width: 360,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              AnimatedBuilder(
-                animation: Listenable.merge([_animationController1, _animationOpacity1]),
-                builder: (BuildContext context, Widget? child) {
-                  return Opacity(
-                    opacity: _animationOpacity1.value,
-                    child: Container(
-                      width: _animationSize1.value,
-                      height: _animationSize1.value,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: ColorConstants.primary,
+        BlocBuilder<BluetoothBloc, BluetoothState>(builder: (context, state) {
+          if (state is BluetoothScanning) {
+            return Column(
+              children: [
+                const SizedBox(height: 50),
+                SizedBox(
+                  height: 360,
+                  width: 360,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      AnimatedBuilder(
+                        animation: Listenable.merge(
+                            [_animationController1, _animationOpacity1]),
+                        builder: (BuildContext context, Widget? child) {
+                          return Opacity(
+                            opacity: _animationOpacity1.value,
+                            child: Container(
+                              width: _animationSize1.value,
+                              height: _animationSize1.value,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: ColorConstants.primary,
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    ),
-                  );
-                },
-              ),
-              AnimatedBuilder(
-                animation: Listenable.merge([_animationController2, _animationOpacity2]),
-                builder: (BuildContext context, Widget? child) {
-                  return Opacity(
-                    opacity: _animationOpacity2.value,
-                    child: Container(
-                      width: _animationSize2.value,
-                      height: _animationSize2.value,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: ColorConstants.primary,
+                      AnimatedBuilder(
+                        animation: Listenable.merge(
+                            [_animationController2, _animationOpacity2]),
+                        builder: (BuildContext context, Widget? child) {
+                          return Opacity(
+                            opacity: _animationOpacity2.value,
+                            child: Container(
+                              width: _animationSize2.value,
+                              height: _animationSize2.value,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: ColorConstants.primary,
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    ),
-                  );
-                },
-              ),
-              Container(
-                width: 120,
-                height: 120,
-                child: Icon(Icons.bluetooth,color: ColorConstants.white, size: 100,),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: ColorConstants.black,
+                      Container(
+                        width: 120,
+                        height: 120,
+                        child: Icon(
+                          Icons.bluetooth,
+                          color: ColorConstants.white,
+                          size: 100,
+                        ),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: ColorConstants.black,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
+              ],
+            );
+          } else if (state is BluetoothError) {
+            return Text("error");
+          } else if( state is BluetoothDataReceived && state.data.isEmpty){
+            return Text("No devices found");;
+          }
+          else {
+          return Container();
+          }
+        }),
       ],
     );
   }

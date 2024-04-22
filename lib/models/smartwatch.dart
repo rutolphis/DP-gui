@@ -1,27 +1,27 @@
-class Smartwatch {
-  String name;
-  String address;
-  int heartRate;
+import 'package:gui_flutter/models/bluetooth_device.dart';
+
+class Smartwatch extends BluetoothDevice {
+  final int heartRate;
 
   Smartwatch({
-    required this.name,
-    required this.address,
+    required String name,
+    required String address,
     required this.heartRate,
-  });
+  }) : super(name: name, address: address);
 
-  // Method to convert Smartwatch object to JSON
-  Map<String, dynamic> toJson() => {
-    'name': name,
-    'address': address,
-    'heartRate': heartRate,
-  };
+  // Overriding toJson method to include heartRate
+  @override
+  Map<String, dynamic> toJson() {
+    return super.toJson()..addAll({'heartRate': heartRate});
+  }
 
-  // Method to create a Smartwatch object from JSON
+  // Factory constructor to create a Smartwatch from JSON
   factory Smartwatch.fromJson(Map<String, dynamic> json) {
     return Smartwatch(
       name: json['name'],
       address: json['address'],
-      heartRate: json['heartRate'],
+      heartRate: json['heartRate'] ?? 0,  // Defaulting to 0 if heartRate is not present
     );
   }
 }
+

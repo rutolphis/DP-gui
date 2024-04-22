@@ -25,16 +25,6 @@ class SocketBloc extends Bloc<SocketEvent, SocketState> {
       }
     });
 
-    socket.on('scan_completed', (data) {
-      print('Scan completed with data: $data');
-      add(ScanCompleted(data));  // Assuming you have a ScanCompleted event in your Bloc
-    });
-
-    socket.on('scan_error', (data) {
-      print('Scan error with message: $data');
-      add(ScanError(data['error']));  // Assuming you have a ScanError event in your Bloc
-    });
-
     socket.onDisconnect((_) => emit(SocketDisconnected()));
 
     on<ConnectSocket>(_onConnectSocket);
@@ -42,9 +32,6 @@ class SocketBloc extends Bloc<SocketEvent, SocketState> {
     on<RequestInitialization>(_onRequestInitialization);
     on<ReceiveInitialization>(_onReceiveInitialization);
     on<ConnectedSocket>(_onConnectedSocket);
-    on<ScanBLE>(_onScanBLE);
-    on<ScanCompleted>(_onScanCompleted);  // Handle scan completed
-    on<ScanError>(_onScanError);           // Handle scan error
 
     add(ConnectSocket());
   }
@@ -75,20 +62,7 @@ class SocketBloc extends Bloc<SocketEvent, SocketState> {
   }
 
 
-  void _onScanBLE(ScanBLE event, Emitter<SocketState> emit) {
-    if (state is SocketInitialized) {
-      socket.emit('scan_ble');
-      print('BLE scan requested');
-    }
-  }
 
-  void _onScanCompleted(ScanCompleted event, Emitter<SocketState> emit) {
-    emit(SocketScanCompleted(event.data));  // Update state with scan data
-  }
-
-  void _onScanError(ScanError event, Emitter<SocketState> emit) {
-    emit(SocketScanError(event.message));  // Update state with error message
-  }
 
 
   @override
