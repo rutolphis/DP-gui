@@ -2,7 +2,7 @@ import 'package:gui_flutter/models/adress.dart';
 
 class PersonalInfo {
   String name;
-  Address address;
+  String address;
   String bloodGroup;
   String insuranceCompany;
 
@@ -15,17 +15,17 @@ class PersonalInfo {
 
   Map<String, dynamic> toJson() => {
     'name': name,
-    'address': address.toJson(),
+    'address': address,
     'bloodType': bloodGroup,
-    'insurance': insuranceCompany,
+    'insurance_company': insuranceCompany,
   };
 
   factory PersonalInfo.fromJson(Map<String, dynamic> json) {
     return PersonalInfo(
-      name: json['name'],
-      address: Address.fromJson(json['address']),
-      bloodGroup: json['bloodType'],
-      insuranceCompany: json['insurance'],
+      name: json['name'] ?? "",
+      address: json['address'] ?? "",
+      bloodGroup: json['bloodType'] ?? "",
+      insuranceCompany: json['insurance_company'] ?? "",
     );
   }
 }

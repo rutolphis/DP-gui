@@ -1,7 +1,10 @@
+import 'package:gui_flutter/bloc/personal_info/personal_info_bloc.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gui_flutter/bloc/socket/socket_event.dart';
 import 'package:gui_flutter/bloc/socket/socket_state.dart';
+
+import '../emergency_contacts/emergency_contacts_bloc.dart';
 
 class SocketBloc extends Bloc<SocketEvent, SocketState> {
   late IO.Socket socket;
@@ -58,11 +61,9 @@ class SocketBloc extends Bloc<SocketEvent, SocketState> {
 
 
   void _onReceiveInitialization(ReceiveInitialization event, Emitter<SocketState> emit) {
+
     emit(SocketInitialized(event.vin));
   }
-
-
-
 
 
   @override

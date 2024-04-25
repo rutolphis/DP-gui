@@ -25,10 +25,10 @@ class Address {
 
   factory Address.fromJson(Map<String, dynamic> json) {
     return Address(
-      street: json['street'],
-      city: json['city'],
-      zipCode: json['zipCode'],
-      country: json['country'],
+      street: json['street'] ?? "",
+      city: json['city'] ?? "",
+      zipCode: json['zipCode'] ?? "",
+      country: json['country'] ?? "",
     );
   }
 }

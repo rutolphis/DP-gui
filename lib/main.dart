@@ -21,14 +21,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
+          BlocProvider<SocketBloc>(
+            create: (context) => SocketBloc(),
+          ),
           BlocProvider<EmergencyContactsBloc>(
             create: (context) => EmergencyContactsBloc(),
           ),
           BlocProvider<PersonalInfoBloc>(
             create: (context) => PersonalInfoBloc(),
-          ),
-          BlocProvider<SocketBloc>(
-            create: (context) => SocketBloc(),
           ),
           BlocProvider<BluetoothBloc>(
             create: (BuildContext context) => BluetoothBloc(

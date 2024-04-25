@@ -42,15 +42,8 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PageWidget(
-        button: CustomButton(
-          icon: const Icon(
-            IconData(0xe0e4, fontFamily: 'MaterialIcons'),
-            size: 30,
-            color: Colors.white,
-            weight: 300,
-          ),
+        button: ConnectButtonWidget(
           onTap: () => _showBluetoothDialog(context),
-          text: 'Connect watch',
         ),
         title: "Dashboard",
         body: const Row(

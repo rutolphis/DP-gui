@@ -42,6 +42,10 @@ dependencies:
   socket_io_client: ^2.0.3+1
   flutter_map_tile_caching: ^9.0.0-dev.5
   syncfusion_flutter_gauges: ^25.1.38
+  jumping_dot: ^0.0.6
+  smooth_page_indicator: ^1.1.0
+  dropdown_button2: ^2.3.9
+  dio: ^5.4.3+1
 
 dev_dependencies:
   flutter_test:

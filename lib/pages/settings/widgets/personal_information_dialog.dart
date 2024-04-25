@@ -150,8 +150,7 @@ class PersonalInformationDialog extends StatelessWidget {
                       if (_formKey.currentState!.validate()) {
                         PersonalInfo updatedPersonalInfo = PersonalInfo(
                             name: _nameController.text,
-                            address: Address(
-                                street: '', city: '', zipCode: '', country: ''),
+                            address: _addressController.text,
                             bloodGroup: _bloodGroupController.text,
                             insuranceCompany: _insuranceCompanyController.text);
                         context

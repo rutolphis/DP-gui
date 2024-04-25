@@ -8,8 +8,9 @@ class PersonalInfoLoading extends PersonalInfoState {}
 
 class PersonalInfoLoaded extends PersonalInfoState {
   final PersonalInfo personalInfo;
+  final String vin;
 
-  PersonalInfoLoaded(this.personalInfo);
+  PersonalInfoLoaded(this.personalInfo, this.vin);
 }
 
 class PersonalInfoError extends PersonalInfoState {

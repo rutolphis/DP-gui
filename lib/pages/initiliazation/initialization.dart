@@ -26,6 +26,11 @@ class _InitializationPageState extends State<InitializationPage> {
     super.initState();
   }
 
+ _downloadUserInformations(String vin) async {
+    BlocProvider.of<PersonalInfoBloc>(context, listen: false).add(LoadPersonalInfo(vin));
+    BlocProvider.of<EmergencyContactsBloc>(context, listen: false).add(LoadEmergencyContacts(vin));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,10 +44,12 @@ class _InitializationPageState extends State<InitializationPage> {
               );
               context.read<SocketBloc>().add(ConnectSocket());  // Auto-reconnect logic if desired
             }
+            if (state is SocketInitialized) {
+              _downloadUserInformations(state.vin);
+            }
           },
           builder: (context, state) {
             if (state is SocketInitialized) {
-              // If initialized, show the main child widget
               return widget.child;
             } else if (state is SocketConnected) {
               // If connected but not yet initialized, show initialization button

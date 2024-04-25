@@ -21,6 +21,7 @@ class ScanCompleted extends SocketEvent {
   ScanCompleted(this.data);
 }
 
+
 class ScanError extends SocketEvent {
   final String message;
   ScanError(this.message);

@@ -7,9 +7,10 @@ class EmergencyContactsInitial extends EmergencyContactsState {}
 class EmergencyContactsLoading extends EmergencyContactsState {}
 
 class EmergencyContactsLoaded extends EmergencyContactsState {
+  final String vin;
   final List<Contact> contacts;
 
-  EmergencyContactsLoaded(this.contacts);
+  EmergencyContactsLoaded(this.contacts, this.vin);
 }
 
 class EmergencyContactsError extends EmergencyContactsState {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gui_flutter/bloc/emergency_contacts/emergency_contacts_bloc.dart';
 import 'package:gui_flutter/bloc/emergency_contacts/emergency_contacts_event.dart';
+import 'package:gui_flutter/bloc/emergency_contacts/emergency_contacts_state.dart';
 import 'package:gui_flutter/constants/colors.dart';
 import 'package:gui_flutter/constants/fonts.dart';
 import 'package:gui_flutter/models/contact.dart';
@@ -97,16 +98,18 @@ class EmergencyContactDialog extends StatelessWidget {
                       )
                   ),
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
+                    var state = context.read<EmergencyContactsBloc>().state;
+                    if (_formKey.currentState!.validate() && state is EmergencyContactsLoaded) {
                       if(name == '' || name == null) {
                         context.read<EmergencyContactsBloc>().add(
-                          AddEmergencyContact(Contact(name: _nameController.text, phone: _phoneController.text)),
+                          AddEmergencyContact(Contact(name: _nameController.text, phone: _phoneController.text), state.vin),
                         );
                       } else {
                         final updatedContact = Contact(name: _nameController.text, phone: _phoneController.text);
-                        context.read<EmergencyContactsBloc>().add(
-                          UpdateEmergencyContact(contactIndex!, updatedContact),
-                        );
+                          context.read<EmergencyContactsBloc>().add(
+                            UpdateEmergencyContact(contactIndex!,
+                                updatedContact, state.vin),
+                          );
                       }
                       Navigator.of(context).pop();
                     }
@@ -130,8 +133,12 @@ class EmergencyContactDialog extends StatelessWidget {
                       )
                   ),
                   onPressed: () {
-                    context.read<EmergencyContactsBloc>().add(DeleteEmergencyContact(contactIndex!));
-                    Navigator.of(context).pop();
+                    var state = context.read<EmergencyContactsBloc>().state;
+                    if(state is EmergencyContactsLoaded) {
+                      context.read<EmergencyContactsBloc>().add(
+                          DeleteEmergencyContact(contactIndex!, state.vin));
+                      Navigator.of(context).pop();
+                    }
                   },
                   child: Text("Delete contact", style: TextStylesConstants.bodyBase.copyWith(color: ColorConstants.white),),
                 ),

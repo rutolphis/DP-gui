@@ -9,6 +9,7 @@ import 'package:gui_flutter/bloc/socket/socket_bloc.dart';
 import 'package:gui_flutter/bloc/socket/socket_event.dart';
 import 'package:gui_flutter/constants/colors.dart';
 import 'package:gui_flutter/constants/fonts.dart';
+import 'package:gui_flutter/models/bluetooth_device.dart';
 import 'package:gui_flutter/pages/home/bluetooth/widgets/bluetooth_item.dart';
 import 'package:gui_flutter/widgets/button.dart';
 import 'package:gui_flutter/widgets/text_field.dart';
@@ -22,6 +23,7 @@ class DeviceChoosePage extends StatefulWidget {
 
 class _DeviceChoosePageState extends State<DeviceChoosePage> {
   String? selectedAddress;
+  BluetoothDevice? selectedDevice;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _authKeyController = TextEditingController();
 
@@ -81,7 +83,7 @@ class _DeviceChoosePageState extends State<DeviceChoosePage> {
                   if (_formKey.currentState!.validate()) {
                     String authKey = _authKeyController.text;
                     Navigator.of(context).pop();
-                    BlocProvider.of<BluetoothBloc>(context).add(ConnectDevice(selectedAddress!, authKey));
+                    BlocProvider.of<BluetoothBloc>(context).add(ConnectDevice(selectedDevice!, authKey));
                   }
                 },
                 text: "Pair",
@@ -113,7 +115,7 @@ class _DeviceChoosePageState extends State<DeviceChoosePage> {
                     itemCount: state.data.length,
                     itemBuilder: (context, index) {
                       final device = state.data[index];
-                      bool isSelected = device?.address == selectedAddress;
+                      bool isSelected = device?.address == selectedDevice?.address;
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 24.0),
                         child: BluetoothItemWidget(
@@ -122,12 +124,12 @@ class _DeviceChoosePageState extends State<DeviceChoosePage> {
                           isSelected: isSelected,
                           onTap: () {
                             setState(() {
-                              if (selectedAddress == device.address) {
-                                selectedAddress =
+                              if (selectedDevice?.address == device.address) {
+                                selectedDevice =
                                     null; // Deselect if the same address is tapped again
                               } else {
-                                selectedAddress =
-                                    device.address; // Update selected address
+                                selectedDevice =
+                                    device;
                               }
                             });
                           },
@@ -143,9 +145,9 @@ class _DeviceChoosePageState extends State<DeviceChoosePage> {
                   alignment: Alignment.centerRight,
                   child: CustomButton(
                     onTap: () =>
-                        {if (selectedAddress != null) _showPairDialog()},
+                        {if (selectedDevice != null) _showPairDialog()},
                     text: "Pair device",
-                    disabled: selectedAddress == null,
+                    disabled: selectedDevice == null,
                   ),
                 ),
                 const SizedBox(
