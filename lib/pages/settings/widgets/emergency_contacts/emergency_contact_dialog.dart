@@ -62,6 +62,14 @@ class EmergencyContactDialog extends StatelessWidget {
           )
         ],
         child: BlocBuilder<EmergencyContactsBloc, EmergencyContactsState>(
+          buildWhen: (previous, current) {
+            if(previous is EmergencyContactsLoading &&
+                current is EmergencyContactsLoaded) {
+              return false;
+            } else {
+              return true;
+            }
+          },
             builder: (context, state) {
             if(state is EmergencyContactsLoaded)  {
             return Column(

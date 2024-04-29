@@ -80,6 +80,13 @@ class _EmergencyContactsWidgetState extends State<EmergencyContactsWidget> {
     return SettingsContainerWidget(
         title: "Emergency contacts",
         child: BlocBuilder<EmergencyContactsBloc, EmergencyContactsState>(
+          buildWhen: (previous, current) {
+            if(previous is EmergencyContactsLoaded && current is EmergencyContactsLoading) {
+              return false;
+            } else {
+              return true;
+            }
+          },
             builder: (context, state) {
           if (state is EmergencyContactsLoaded) {
             contacts = state.contacts;

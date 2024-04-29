@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_bloc.dart';
 import 'package:gui_flutter/bloc/emergency_contacts/emergency_contacts_bloc.dart';
 import 'package:gui_flutter/bloc/personal_info/personal_info_bloc.dart';
 import 'package:gui_flutter/bloc/socket/socket_bloc.dart';
-import 'package:gui_flutter/bloc/socket/socket_event.dart';
+import 'package:gui_flutter/bloc/vehicle_data/vehicle_data_bloc.dart';
 import 'package:gui_flutter/constants/colors.dart';
 import 'package:gui_flutter/pages/initiliazation/initialization.dart';
 import 'package:gui_flutter/widgets/navigation.dart';
@@ -32,6 +31,11 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider<BluetoothBloc>(
             create: (BuildContext context) => BluetoothBloc(
+              socketBloc: BlocProvider.of<SocketBloc>(context, listen: false),
+            ),
+          ),
+          BlocProvider<VehicleDataBloc>(
+            create: (BuildContext context) => VehicleDataBloc(
               socketBloc: BlocProvider.of<SocketBloc>(context, listen: false),
             ),
           ),

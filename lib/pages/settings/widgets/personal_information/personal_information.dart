@@ -7,8 +7,8 @@ import 'package:gui_flutter/bloc/socket/socket_bloc.dart';
 import 'package:gui_flutter/bloc/socket/socket_state.dart';
 import 'package:gui_flutter/constants/colors.dart';
 import 'package:gui_flutter/models/personal_info.dart';
-import 'package:gui_flutter/pages/settings/widgets/personal_information_dialog.dart';
-import 'package:gui_flutter/pages/settings/widgets/personal_information_item.dart';
+import 'package:gui_flutter/pages/settings/widgets/personal_information/personal_information_dialog.dart';
+import 'package:gui_flutter/pages/settings/widgets/personal_information/personal_information_item.dart';
 import 'package:gui_flutter/pages/settings/widgets/settings_container.dart';
 import 'package:gui_flutter/widgets/button.dart';
 
@@ -51,6 +51,13 @@ class _PersonalInformationWidgetState extends State<PersonalInformationWidget> {
         title: "Personal information",
         onIconTap: () => _showDialog(_personalInfo),
         child: BlocBuilder<PersonalInfoBloc, PersonalInfoState>(
+          buildWhen: (previous, current) {
+            if(previous is PersonalInfoLoaded && current is PersonalInfoLoading) {
+              return false;
+            } else {
+              return true;
+            }
+          },
         builder: (context, state) {
           if (state is PersonalInfoLoaded) {
             _personalInfo = state.personalInfo;

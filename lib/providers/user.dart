@@ -1,4 +1,4 @@
-import 'package:gui_flutter/models/car_stats.dart';
+import 'package:gui_flutter/models/vehicle_data.dart';
 import 'package:gui_flutter/models/emergency_contacts.dart';
 import 'package:gui_flutter/models/options.dart';
 import 'package:gui_flutter/models/personal_info.dart';

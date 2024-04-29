@@ -31,18 +31,7 @@ class _ConnectButtonWidgetState extends State<ConnectButtonWidget> {
   Widget build(BuildContext context) {
     return BlocBuilder<BluetoothBloc, BluetoothState>(
         builder: (context, state) {
-      if (state is NoConnectedDevices) {
-        return CustomButton(
-          icon: const Icon(
-            IconData(0xe0e4, fontFamily: 'MaterialIcons'),
-            size: 30,
-            color: Colors.white,
-            weight: 300,
-          ),
-          onTap: widget.onTap,
-          text: 'Connect watch',
-        );
-      } else if (state is ConnectedDevices) {
+      if (state is ConnectedDevices) {
         devices = state.devices.map((device) => device.name).toList();
         return DropdownButtonHideUnderline(
           child: DropdownButton2<String>(
@@ -84,7 +73,7 @@ class _ConnectButtonWidgetState extends State<ConnectButtonWidget> {
               setState(() {
                 selectedValue = value;
               });
-              if(selectedValue == "add") {
+              if (selectedValue == "add") {
                 widget.onTap();
               }
             },
@@ -97,8 +86,9 @@ class _ConnectButtonWidgetState extends State<ConnectButtonWidget> {
                       Flexible(
                         child: Text(
                           item,
-                          style: TextStylesConstants.bodyLarge
-                              .copyWith(color: ColorConstants.black, overflow: TextOverflow.ellipsis),
+                          style: TextStylesConstants.bodyLarge.copyWith(
+                              color: ColorConstants.black,
+                              overflow: TextOverflow.ellipsis),
                         ),
                       ),
                       const SizedBox(
@@ -153,7 +143,16 @@ class _ConnectButtonWidgetState extends State<ConnectButtonWidget> {
           ),
         );
       } else {
-        return Container();
+        return CustomButton(
+          icon: const Icon(
+            IconData(0xe0e4, fontFamily: 'MaterialIcons'),
+            size: 30,
+            color: Colors.white,
+            weight: 300,
+          ),
+          onTap: widget.onTap,
+          text: 'Connect watch',
+        );
       }
     });
   }

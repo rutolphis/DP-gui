@@ -72,6 +72,14 @@ class PersonalInformationDialog extends StatelessWidget {
             )
           ],
           child: BlocBuilder<PersonalInfoBloc, PersonalInfoState>(
+              buildWhen: (previous, current) {
+                if(previous is PersonalInfoLoading &&
+                    current is PersonalInfoLoaded) {
+                  return false;
+                } else {
+                  return true;
+                }
+              },
               builder: (context, state) {
                 if (state is PersonalInfoLoaded) {
                   return Column(

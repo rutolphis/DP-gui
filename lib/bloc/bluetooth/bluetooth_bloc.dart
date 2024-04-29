@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gui_flutter/bloc/socket/socket_bloc.dart';
 import 'package:gui_flutter/models/bluetooth_device.dart';
+import 'package:gui_flutter/models/vehicle_data.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'bluetooth_event.dart';
 import 'bluetooth_state.dart';
@@ -15,6 +16,12 @@ class BluetoothBloc extends Bloc<BluetoothEvent, BluetoothState> {
 
   BluetoothBloc({required this.socketBloc}) : super(NoConnectedDevices()) {
     socket = socketBloc.socket;
+
+    if (socket.connected) {
+      print("ble conneceted");
+    } else {
+      print("ble not connecetd");
+    }
 
     // Listen to the socket events directly
     socket.on('scan_completed', (data) {
@@ -112,7 +119,7 @@ class BluetoothBloc extends Bloc<BluetoothEvent, BluetoothState> {
 
   @override
   Future<void> close() {
-    // Clean up resources when the BLoC is closed
+    socket.off('connection_success');
     socket.off('scan_completed');
     socket.off('scan_error');
     return super.close();
