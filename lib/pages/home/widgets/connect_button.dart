@@ -1,6 +1,8 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_bloc.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_state.dart';
 import 'package:gui_flutter/constants/colors.dart';
@@ -10,7 +12,6 @@ import 'dart:math' as math;
 
 class ConnectButtonWidget extends StatefulWidget {
   final VoidCallback onTap;
-
 
   ConnectButtonWidget({
     Key? key,
@@ -22,7 +23,7 @@ class ConnectButtonWidget extends StatefulWidget {
 }
 
 class _ConnectButtonWidgetState extends State<ConnectButtonWidget> {
-  List<String> items = ["hodinka1", "hodinka2", "hodinka3", "hodinka4"];
+  late List<String> devices;
 
   String? selectedValue;
 
@@ -30,7 +31,7 @@ class _ConnectButtonWidgetState extends State<ConnectButtonWidget> {
   Widget build(BuildContext context) {
     return BlocBuilder<BluetoothBloc, BluetoothState>(
         builder: (context, state) {
-      if (state is ConnectedDevices) {
+      if (state is NoConnectedDevices) {
         return CustomButton(
           icon: const Icon(
             IconData(0xe0e4, fontFamily: 'MaterialIcons'),
@@ -41,7 +42,8 @@ class _ConnectButtonWidgetState extends State<ConnectButtonWidget> {
           onTap: widget.onTap,
           text: 'Connect watch',
         );
-      } else if (state is NoConnectedDevices) {
+      } else if (state is ConnectedDevices) {
+        devices = state.devices.map((device) => device.name).toList();
         return DropdownButtonHideUnderline(
           child: DropdownButton2<String>(
             isExpanded: false,
@@ -56,17 +58,22 @@ class _ConnectButtonWidgetState extends State<ConnectButtonWidget> {
                 const SizedBox(
                   width: 8,
                 ),
-                Text("Smartwatches", style: TextStylesConstants.bodyLarge.copyWith(color: ColorConstants.primary),),
+                Text(
+                  "Smartwatches",
+                  style: TextStylesConstants.bodyLarge
+                      .copyWith(color: ColorConstants.primary),
+                ),
                 const SizedBox(
                   width: 8,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: Transform.rotate(
-                      angle: -math.pi / 2,
+                    angle: -math.pi / 2,
                     child: const Icon(
                       Icons.arrow_back_ios,
-                      color: ColorConstants.primary,size: 30,
+                      color: ColorConstants.primary,
+                      size: 30,
                     ),
                   ),
                 )
@@ -77,20 +84,63 @@ class _ConnectButtonWidgetState extends State<ConnectButtonWidget> {
               setState(() {
                 selectedValue = value;
               });
+              if(selectedValue == "add") {
+                widget.onTap();
+              }
             },
-            items: items
-                .map((String item) => DropdownMenuItem<String>(
-                      value: item,
-                      child: Row(mainAxisAlignment:MainAxisAlignment.spaceBetween,children: [
-                        Text(item, style: TextStylesConstants.bodyLarge.copyWith(color: ColorConstants.black),),
-                        const SizedBox(width: 8,),
-                        const CircleAvatar(
-                          backgroundColor: ColorConstants.black,
-                          child: Icon(Icons.close, color: Colors.white,size: 30,),
+            items: devices.map((String item) {
+              return DropdownMenuItem<String>(
+                  value: item,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          item,
+                          style: TextStylesConstants.bodyLarge
+                              .copyWith(color: ColorConstants.black, overflow: TextOverflow.ellipsis),
                         ),
-                      ],)
-                    ))
-                .toList(),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      const SizedBox(
+                        height: 30,
+                        width: 30,
+                        child: CircleAvatar(
+                          backgroundColor: ColorConstants.black,
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 22,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ));
+            }).toList()
+              ..add(DropdownMenuItem<String>(
+                  value: "add",
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "Connect watch",
+                          style: TextStylesConstants.bodyLarge
+                              .copyWith(color: ColorConstants.primary),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      SvgPicture.asset(
+                        'assets/icons/add-circle.svg',
+                        width: 30,
+                        height: 30,
+                      ),
+                    ],
+                  ))),
             dropdownStyleData: DropdownStyleData(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),

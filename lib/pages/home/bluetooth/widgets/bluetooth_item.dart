@@ -56,9 +56,11 @@ class BluetoothItemWidget extends StatelessWidget {
                   color: ColorConstants.grey,
                 ),
                 const SizedBox(width: 10,),
-                Text(
-                  address,
-                  style: TextStylesConstants.bodyLarge.copyWith(color: ColorConstants.grey),
+                Flexible(
+                  child: Text(
+                    address,
+                    style: TextStylesConstants.bodyLarge.copyWith(color: ColorConstants.grey),
+                  ),
                 ),
               ],
             ),

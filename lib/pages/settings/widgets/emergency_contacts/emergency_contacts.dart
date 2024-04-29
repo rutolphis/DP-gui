@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gui_flutter/bloc/emergency_contacts/emergency_contacts_bloc.dart';
 import 'package:gui_flutter/bloc/emergency_contacts/emergency_contacts_state.dart';
+import 'package:gui_flutter/bloc/socket/socket_bloc.dart';
+import 'package:gui_flutter/bloc/socket/socket_state.dart';
 import 'package:gui_flutter/constants/colors.dart';
 import 'package:gui_flutter/constants/fonts.dart';
 import 'package:gui_flutter/models/contact.dart';
@@ -42,7 +44,8 @@ class _EmergencyContactsWidgetState extends State<EmergencyContactsWidget> {
       if (i % 2 == 0) {
         list1.add(EmergencyContactWidget(
           name: contacts[i].name,
-          phone: contacts[i].phone, contactIndex: i,
+          phone: contacts[i].phone,
+          contactIndex: i,
         ));
         list1.add(const SizedBox(
           height: 24,
@@ -78,77 +81,87 @@ class _EmergencyContactsWidgetState extends State<EmergencyContactsWidget> {
         title: "Emergency contacts",
         child: BlocBuilder<EmergencyContactsBloc, EmergencyContactsState>(
             builder: (context, state) {
-              if (state is EmergencyContactsLoaded) {
-                contacts = state.contacts;
-                _distributeContacts(contacts);
+          if (state is EmergencyContactsLoaded) {
+            contacts = state.contacts;
+            _distributeContacts(contacts);
 
-                return Column(
-                  children: [
-                    list1.isNotEmpty || list2.isNotEmpty
-                        ? Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: list1,
+            return Column(
+              children: [
+                list1.isNotEmpty || list2.isNotEmpty
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: list1,
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          width: 16,
-                        ),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: list2,
+                          const SizedBox(
+                            width: 16,
                           ),
-                        )
-                      ],
-                    )
-                        : Column(
-                      children: [
-                        Text(
-                          "Your list of contacts is empty",
-                          style: TextStylesConstants.bodyLarge
-                              .copyWith(color: const Color(0xff878C99)),
-                        ),
-                        const SizedBox(
-                          height: 24,
-                        ),
-                        CustomButton(
-                          onTap: () => _showDialog(context),
-                          text: "Add contact",
-                          icon: SvgPicture.asset(
-                            'assets/icons/add.svg',
-                            width: 24,
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: list2,
+                            ),
+                          )
+                        ],
+                      )
+                    : Column(
+                        children: [
+                          Text(
+                            "Your list of contacts is empty",
+                            style: TextStylesConstants.bodyLarge
+                                .copyWith(color: const Color(0xff878C99)),
+                          ),
+                          const SizedBox(
                             height: 24,
                           ),
-                          padding: const EdgeInsets.all(24),
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 32,
-                    ),
-                    if (list1.isNotEmpty || list2.isNotEmpty)
-                      Align(
-                          alignment: Alignment.centerRight,
-                          child: IconButton(
-                            padding: const EdgeInsets.all(2),
-                            constraints: const BoxConstraints(),
-                            onPressed: () => _showDialog(context),
+                          CustomButton(
+                            onTap: () => _showDialog(context),
+                            text: "Add contact",
                             icon: SvgPicture.asset(
-                                'assets/icons/add-circle.svg'),
-                            iconSize: 70,
-                          ))
-                  ],
-                );
-              }
-              return const Center(child: CircularProgressIndicator());
-            })
-    );
+                              'assets/icons/add.svg',
+                              width: 24,
+                              height: 24,
+                            ),
+                            padding: const EdgeInsets.all(24),
+                          )
+                        ],
+                      ),
+                const SizedBox(
+                  height: 32,
+                ),
+                if (list1.isNotEmpty || list2.isNotEmpty)
+                  Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                        padding: const EdgeInsets.all(2),
+                        constraints: const BoxConstraints(),
+                        onPressed: () => _showDialog(context),
+                        icon: SvgPicture.asset('assets/icons/add-circle.svg'),
+                        iconSize: 70,
+                      ))
+              ],
+            );
+          } else if (state is EmergencyContactsLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            return CustomButton(
+                onTap: () {
+                  var loadedState =
+                      BlocProvider.of<SocketBloc>(context, listen: false).state;
+                  if (loadedState is SocketInitialized) {
+                    BlocProvider.of<EmergencyContactsBloc>(context,
+                            listen: false)
+                        .add(LoadEmergencyContacts(loadedState.vin));
+                  }
+                },
+                text: "Try again");
+          }
+        }));
   }
-
 }

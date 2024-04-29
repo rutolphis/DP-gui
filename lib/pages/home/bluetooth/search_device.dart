@@ -110,7 +110,7 @@ class _DeviceSearchPageState extends State<DeviceSearchPage>
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           "Searching for devices",
           style: TextStylesConstants.h2,
         ),
@@ -134,7 +134,7 @@ class _DeviceSearchPageState extends State<DeviceSearchPage>
                             child: Container(
                               width: _animationSize1.value,
                               height: _animationSize1.value,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: ColorConstants.primary,
                               ),
@@ -151,7 +151,7 @@ class _DeviceSearchPageState extends State<DeviceSearchPage>
                             child: Container(
                               width: _animationSize2.value,
                               height: _animationSize2.value,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: ColorConstants.primary,
                               ),
@@ -162,14 +162,14 @@ class _DeviceSearchPageState extends State<DeviceSearchPage>
                       Container(
                         width: 120,
                         height: 120,
-                        child: Icon(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: ColorConstants.black,
+                        ),
+                        child: const Icon(
                           Icons.bluetooth,
                           color: ColorConstants.white,
                           size: 100,
-                        ),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: ColorConstants.black,
                         ),
                       ),
                     ],
@@ -178,9 +178,9 @@ class _DeviceSearchPageState extends State<DeviceSearchPage>
               ],
             );
           } else if (state is BluetoothError) {
-            return Text("error");
+            return const Text("error");
           } else if( state is BluetoothDataReceived && state.data.isEmpty){
-            return Text("No devices found");;
+            return const Text("No devices found");;
           }
           else {
           return Container();

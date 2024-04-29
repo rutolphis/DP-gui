@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gui_flutter/bloc/personal_info/personal_info_bloc.dart';
+import 'package:gui_flutter/bloc/personal_info/personal_info_event.dart';
 import 'package:gui_flutter/bloc/personal_info/personal_info_state.dart';
+import 'package:gui_flutter/bloc/socket/socket_bloc.dart';
+import 'package:gui_flutter/bloc/socket/socket_state.dart';
 import 'package:gui_flutter/constants/colors.dart';
 import 'package:gui_flutter/models/personal_info.dart';
 import 'package:gui_flutter/pages/settings/widgets/personal_information_dialog.dart';
 import 'package:gui_flutter/pages/settings/widgets/personal_information_item.dart';
 import 'package:gui_flutter/pages/settings/widgets/settings_container.dart';
+import 'package:gui_flutter/widgets/button.dart';
 
 class PersonalInformationWidget extends StatefulWidget {
   const PersonalInformationWidget({Key? key}) : super(key: key);
@@ -73,7 +77,20 @@ class _PersonalInformationWidgetState extends State<PersonalInformationWidget> {
               )
             ],
           ); }
-          return const Center(child: CircularProgressIndicator());
+          else if (state is PersonalInfoLoading) {
+          return const Center (child: CircularProgressIndicator ()
+          );
+        } else {
+            return CustomButton(onTap: () {
+              var loadedState =
+                  BlocProvider.of<SocketBloc>(context, listen: false)
+                      .state;
+              if (loadedState is SocketInitialized) {
+                BlocProvider.of<PersonalInfoBloc>(context, listen: false)
+                    .add(LoadPersonalInfo(loadedState.vin));
+              }
+            }, text: "Try again");
+          }
         })
         );
   }
