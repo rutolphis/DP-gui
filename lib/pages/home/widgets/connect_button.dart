@@ -5,10 +5,132 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_bloc.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_state.dart';
+import 'package:gui_flutter/bloc/bluetooth_disconnect/bluetooth_disconnect_bloc.dart';
+import 'package:gui_flutter/bloc/bluetooth_disconnect/bluetooth_disconnect_event.dart';
+import 'package:gui_flutter/bloc/bluetooth_disconnect/bluetooth_disconnect_state.dart';
 import 'package:gui_flutter/constants/colors.dart';
 import 'package:gui_flutter/constants/fonts.dart';
+import 'package:gui_flutter/models/bluetooth_device.dart';
 import 'package:gui_flutter/widgets/button.dart';
 import 'dart:math' as math;
+
+import 'package:tuple/tuple.dart';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gui_flutter/bloc/emergency_contacts/emergency_contacts_bloc.dart';
+import 'package:gui_flutter/bloc/emergency_contacts/emergency_contacts_event.dart';
+import 'package:gui_flutter/bloc/emergency_contacts/emergency_contacts_state.dart';
+import 'package:gui_flutter/constants/colors.dart';
+import 'package:gui_flutter/constants/fonts.dart';
+import 'package:gui_flutter/models/contact.dart';
+import 'package:gui_flutter/widgets/progress_indicator.dart';
+import 'package:gui_flutter/widgets/text_field.dart';
+
+class _DisconnectDeviceDialog extends StatelessWidget {
+  final String? name;
+  final String? address;
+
+  const _DisconnectDeviceDialog(
+      {super.key, required this.name, required this.address});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+      ),
+      surfaceTintColor: Colors.transparent,
+      backgroundColor: ColorConstants.white,
+      contentPadding: const EdgeInsets.all(24),
+      content:
+          BlocConsumer<BluetoothDisconnectionBloc, BluetoothDisconnectionState>(
+        builder: (context, state) {
+          if (state is DeviceDisconnected || state is DisconnectionInitial) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Disconnect smartwatches",
+                      style: TextStylesConstants.h2,
+                    ),
+                    const SizedBox(
+                      width: 40,
+                    ),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(100),
+                      onTap: () {
+                        Navigator.of(context).pop(); // Closes the dialog
+                      },
+                      child: const CircleAvatar(
+                        backgroundColor: ColorConstants.black,
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 32),
+                Text(
+                  "Are you really sure that you want to disconnect ${name}",
+                  style: TextStylesConstants.bodyLarge,
+                ),
+                ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.red),
+                      padding:
+                          MaterialStateProperty.resolveWith<EdgeInsetsGeometry>(
+                        (Set<MaterialState> states) {
+                          return const EdgeInsets.all(20);
+                        },
+                      ),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ))),
+                  onPressed: () {
+                    var state = context.read<EmergencyContactsBloc>().state;
+                    if (state is EmergencyContactsLoaded) {
+                      BlocProvider.of<BluetoothDisconnectionBloc>(context)
+                          .add(DisconnectRequest(address!));
+                    }
+                  },
+                  child: Text(
+                    "Disconnect smartwatch",
+                    style: TextStylesConstants.bodyBase
+                        .copyWith(color: ColorConstants.white),
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return const SizedCircularProgressIndicator();
+          }
+        },
+        listenWhen: (previous, current) {
+          if (previous is DeviceDisconnecting &&
+              current is DeviceDisconnected) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+        listener: (BuildContext context, BluetoothDisconnectionState state) {
+          if (state is DeviceDisconnected) {
+            Navigator.of(context).pop();
+          }
+        },
+      ),
+    );
+  }
+}
 
 class ConnectButtonWidget extends StatefulWidget {
   final VoidCallback onTap;
@@ -23,7 +145,7 @@ class ConnectButtonWidget extends StatefulWidget {
 }
 
 class _ConnectButtonWidgetState extends State<ConnectButtonWidget> {
-  late List<String> devices;
+  late List<BluetoothDevice> devices;
 
   String? selectedValue;
 
@@ -32,7 +154,7 @@ class _ConnectButtonWidgetState extends State<ConnectButtonWidget> {
     return BlocBuilder<BluetoothBloc, BluetoothState>(
         builder: (context, state) {
       if (state is ConnectedDevices) {
-        devices = state.devices.map((device) => device.name).toList();
+        devices = state.devices;
         return DropdownButtonHideUnderline(
           child: DropdownButton2<String>(
             isExpanded: false,
@@ -75,17 +197,29 @@ class _ConnectButtonWidgetState extends State<ConnectButtonWidget> {
               });
               if (selectedValue == "add") {
                 widget.onTap();
+              } else {
+                BluetoothDevice? foundDevice = devices
+                    .firstWhere((device) => device.address == selectedValue);
+
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return _DisconnectDeviceDialog(
+                        name: foundDevice.name,
+                        address: foundDevice.address,
+                      );
+                    });
               }
             },
-            items: devices.map((String item) {
+            items: devices.map((BluetoothDevice item) {
               return DropdownMenuItem<String>(
-                  value: item,
+                  value: item.address,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Flexible(
                         child: Text(
-                          item,
+                          item.name,
                           style: TextStylesConstants.bodyLarge.copyWith(
                               color: ColorConstants.black,
                               overflow: TextOverflow.ellipsis),

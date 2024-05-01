@@ -100,7 +100,7 @@ class BluetoothBloc extends Bloc<BluetoothEvent, BluetoothState> {
 
   // Method to handle device disconnection
   void _onDisconnectDevice(DisconnectDevice event, Emitter<BluetoothState> emit) {
-    connectedDevices.removeWhere((device) => device.address == event.device.address);
+    connectedDevices.removeWhere((device) => device.address == event.address);
     if (connectedDevices.isEmpty) {
       emit(NoConnectedDevices());  // Emit state indicating no devices are connected
     } else {

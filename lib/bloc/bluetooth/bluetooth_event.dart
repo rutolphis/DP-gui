@@ -34,9 +34,9 @@ class ConnectedDevice extends BluetoothEvent {
 }
 
 class DisconnectDevice extends BluetoothEvent {
-  final BluetoothDevice device;
+  final String address;
 
-  DisconnectDevice(this.device);
+  DisconnectDevice(this.address);
 }
 
 class BluetoothScan extends BluetoothEvent {}
