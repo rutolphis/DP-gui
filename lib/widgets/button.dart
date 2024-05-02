@@ -8,13 +8,14 @@ class CustomButton extends StatelessWidget {
   final EdgeInsets? padding;
   final Widget? icon;
   final String text;
+  final Color color;
   final disabled;
 
   const CustomButton(
       {Key? key,
       required this.onTap,
       this.padding, this.icon,
-      required this.text, this.disabled = false})
+      required this.text, this.disabled = false, this.color = ColorConstants.primary})
       : super(key: key);
 
   @override
@@ -24,7 +25,7 @@ class CustomButton extends StatelessWidget {
       child: Container(
         padding: padding ?? const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: disabled ? ColorConstants.grey : ColorConstants.primary, // Set your desired button color here
+          color: disabled ? ColorConstants.grey : color, // Set your desired button color here
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Row(

@@ -81,7 +81,7 @@ class BluetoothBloc extends Bloc<BluetoothEvent, BluetoothState> {
   }
 
   void _onConnectDevice(ConnectDevice event, Emitter<BluetoothState> emit) {
-    socket.emit('connect_miband', {'device_address': event.device.address, 'name': event.device.name, 'auth_key': event.authKey});
+    socket.emit('connect_miband', {'device_address': event.device.address, 'name': event.device.name, 'auth_key': event.authKey, 'is_driver': event.isDriver});
     emit(DeviceConnecting());
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gui_flutter/bloc/accident/accident_bloc.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_bloc.dart';
 import 'package:gui_flutter/bloc/bluetooth_disconnect/bluetooth_disconnect_bloc.dart';
 import 'package:gui_flutter/bloc/emergency_contacts/emergency_contacts_bloc.dart';
@@ -32,6 +33,11 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider<BluetoothBloc>(
             create: (BuildContext context) => BluetoothBloc(
+              socketBloc: BlocProvider.of<SocketBloc>(context, listen: false),
+            ),
+          ),
+          BlocProvider<AccidentBloc>(
+            create: (BuildContext context) => AccidentBloc(
               socketBloc: BlocProvider.of<SocketBloc>(context, listen: false),
             ),
           ),

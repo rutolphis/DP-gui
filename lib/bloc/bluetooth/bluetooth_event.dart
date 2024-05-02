@@ -21,8 +21,9 @@ class BluetoothScanError extends BluetoothEvent {
 class ConnectDevice extends BluetoothEvent {
   final BluetoothDevice device;
   final String authKey;
+  final bool isDriver;
 
-  ConnectDevice(this.device, this.authKey);
+  ConnectDevice(this.device, this.authKey, this.isDriver);
 }
 
 class ConnectionError extends BluetoothEvent {}

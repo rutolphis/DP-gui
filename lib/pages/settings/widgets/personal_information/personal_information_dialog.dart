@@ -168,43 +168,20 @@ class PersonalInformationDialog extends StatelessWidget {
                               },
                             ),
                             const SizedBox(height: 32),
-                            ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all<
-                                      Color>(
-                                      ColorConstants.primary),
-                                  padding: MaterialStateProperty.resolveWith<
-                                      EdgeInsetsGeometry>(
-                                        (Set<MaterialState> states) {
-                                      return const EdgeInsets.all(20);
-                                    },
-                                  ),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            8.0),
-                                      ))),
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  PersonalInfo updatedPersonalInfo = PersonalInfo(
-                                      name: _nameController.text,
-                                      address: _addressController.text,
-                                      bloodGroup: _bloodGroupController.text,
-                                      insuranceCompany:
-                                      _insuranceCompanyController.text);
-                                  context
-                                      .read<PersonalInfoBloc>()
-                                      .add(
-                                      UpdatePersonalInfo(updatedPersonalInfo));
-                                }
-                              },
-                              child: Text(
-                                submit,
-                                style: TextStylesConstants.bodyBase
-                                    .copyWith(color: ColorConstants.white),
-                              ), // Assuming TextStylesConstants.bodyBase exists
-                            ),
+                            CustomButton(onTap: () {
+                              if (_formKey.currentState!.validate()) {
+                                PersonalInfo updatedPersonalInfo = PersonalInfo(
+                                    name: _nameController.text,
+                                    address: _addressController.text,
+                                    bloodGroup: _bloodGroupController.text,
+                                    insuranceCompany:
+                                    _insuranceCompanyController.text);
+                                context
+                                    .read<PersonalInfoBloc>()
+                                    .add(
+                                    UpdatePersonalInfo(updatedPersonalInfo));
+                              }
+                            }, text: submit),
                           ],
                         ),
                       ),

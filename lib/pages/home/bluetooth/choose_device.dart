@@ -27,68 +27,112 @@ class _DeviceChoosePageState extends State<DeviceChoosePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _authKeyController = TextEditingController();
 
+  bool isDriver = false;
+
   void _showPairDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          contentPadding: const EdgeInsets.only(top: 24, right: 24, left: 24, bottom: 24),
+          contentPadding:
+              const EdgeInsets.only(top: 24, right: 24, left: 24, bottom: 24),
           surfaceTintColor: Colors.transparent,
           backgroundColor: ColorConstants.white,
           shape: RoundedRectangleBorder(
             borderRadius:
                 BorderRadius.circular(8.0), // Set the border radius to 8
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Add Auth key", style: TextStylesConstants.h2,),
-                  const SizedBox(width: 40,),
-                  InkWell(
-                    borderRadius: BorderRadius.circular(100),
-                    onTap: () {
-                      Navigator.of(context).pop(); // Closes the dialog
-                    },
-                    child: const CircleAvatar(
-                      backgroundColor: ColorConstants.black,
-                      child: Icon(Icons.close, color: Colors.white,size: 30,),
+          content: SizedBox(
+            width: 400,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Add Auth key",
+                      style: TextStylesConstants.h2,
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24,),
-              Form(
-                key: _formKey,
-                child: CustomTextFieldWidget(
-                  controller: _authKeyController,
-                  hintText:  "Auth Key",
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Auth key can't be blank";
-                    }
-
-                    if (value.length < 32) {
-                      return 'Auth key should be 32 characters long';
-                    }
-                    return null;
-                  },
+                    InkWell(
+                      borderRadius: BorderRadius.circular(100),
+                      onTap: () {
+                        Navigator.of(context).pop(); // Closes the dialog
+                      },
+                      child: const CircleAvatar(
+                        backgroundColor: ColorConstants.black,
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 24,),
-              CustomButton(
-                onTap: () {
-                  if (_formKey.currentState!.validate()) {
-                    String authKey = _authKeyController.text;
-                    Navigator.of(context).pop();
-                    BlocProvider.of<BluetoothBloc>(context).add(ConnectDevice(selectedDevice!, authKey));
-                  }
-                },
-                text: "Pair",
-              )
-            ],
+                const SizedBox(
+                  height: 24,
+                ),
+                Form(
+                  key: _formKey,
+                  child: CustomTextFieldWidget(
+                    controller: _authKeyController,
+                    hintText: "Auth Key",
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Auth key can't be blank";
+                      }
+
+                      if (value.length < 32) {
+                        return 'Auth key should be 32 characters long';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: 24,
+                ),
+                StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                  return Row(
+                    children: [
+                      Transform.scale(
+                          scale: 1.3,
+                          child: Checkbox(
+                              activeColor: ColorConstants.primary,
+                              value: isDriver,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  isDriver = value!;
+                                });
+                              })),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      const Text(
+                        "Driver's smartwatches",
+                        style: TextStylesConstants.bodyBase,
+                      )
+                    ],
+                  );
+                }),
+                const SizedBox(
+                  height: 24,
+                ),
+                CustomButton(
+                  onTap: () {
+                    if (_formKey.currentState!.validate()) {
+                      String authKey = _authKeyController.text;
+                      Navigator.of(context).pop();
+                      BlocProvider.of<BluetoothBloc>(context)
+                          .add(ConnectDevice(selectedDevice!, authKey, isDriver));
+                    }
+                  },
+                  text: "Pair",
+                )
+              ],
+            ),
           ),
         );
       },
@@ -106,7 +150,7 @@ class _DeviceChoosePageState extends State<DeviceChoosePage> {
         height: 60,
       ),
       BlocBuilder<BluetoothBloc, BluetoothState>(builder: (context, state) {
-        if (state is BluetoothDataReceived) {
+        if (state is BluetoothDataReceived && state.data.isNotEmpty) {
           return Flexible(
             child: Column(
               children: [
@@ -115,7 +159,8 @@ class _DeviceChoosePageState extends State<DeviceChoosePage> {
                     itemCount: state.data.length,
                     itemBuilder: (context, index) {
                       final device = state.data[index];
-                      bool isSelected = device?.address == selectedDevice?.address;
+                      bool isSelected =
+                          device?.address == selectedDevice?.address;
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 24.0),
                         child: BluetoothItemWidget(
@@ -128,8 +173,7 @@ class _DeviceChoosePageState extends State<DeviceChoosePage> {
                                 selectedDevice =
                                     null; // Deselect if the same address is tapped again
                               } else {
-                                selectedDevice =
-                                    device;
+                                selectedDevice = device;
                               }
                             });
                           },
@@ -157,7 +201,9 @@ class _DeviceChoosePageState extends State<DeviceChoosePage> {
             ),
           );
         } else {
-          return Container();
+          return Flexible(child: Column(children: [
+            Icon(Icons.)
+          ],));
         }
       })
     ]);

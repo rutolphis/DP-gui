@@ -30,7 +30,7 @@ class _BluetoothConnectDialogState extends State<BluetoothConnectDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<BluetoothBloc, BluetoothState>(
+    return BlocListener<BluetoothBloc, BluetoothState>(
       listener: (context, state) {
         if (state is BluetoothDataReceived && state.data.isNotEmpty) {
           _pageController.animateToPage(
@@ -46,48 +46,47 @@ class _BluetoothConnectDialogState extends State<BluetoothConnectDialog> {
           );
         }
       },
-      builder: (context, state) {
-        return Scaffold(
-            body: Padding(
-          padding: const EdgeInsets.only(top: 72.0, left: 64, right: 64),
-          child: Column(children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.arrow_back,
-                    size: 40,
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    BlocProvider.of<BluetoothBloc>(context)
-                        .add(CheckDevicesStatus());
-                  },
+      child: Scaffold(
+          body: Padding(
+        padding: const EdgeInsets.only(top: 72.0, left: 64, right: 64),
+        child: Column(children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.arrow_back,
+                  size: 40,
                 ),
-                const Text(
-                  'Connecting watch to the system',
-                  style: TextStylesConstants.bodyLarge,
-                ),
-                Container()
+                onPressed: () {
+                  Navigator.pop(context);
+                  BlocProvider.of<BluetoothBloc>(context)
+                      .add(CheckDevicesStatus());
+                },
+              ),
+              const Text(
+                'Connecting watch to the system',
+                style: TextStylesConstants.bodyLarge,
+              ),
+              Container()
+            ],
+          ),
+          const SizedBox(
+            height: 60,
+          ),
+          Expanded(
+            child: PageView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: _pageController,
+              children: const <Widget>[
+                DeviceSearchPage(),
+                DeviceChoosePage(),
+                DeviceConnectionResultPage()
               ],
             ),
-            const SizedBox(
-              height: 60,
-            ),
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                children: const <Widget>[
-                  DeviceSearchPage(),
-                  DeviceChoosePage(),
-                  DeviceConnectionResultPage()
-                ],
-              ),
-            )
-          ]),
-        ));
-      },
+          )
+        ]),
+      )),
     );
   }
 }

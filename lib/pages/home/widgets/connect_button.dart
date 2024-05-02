@@ -47,68 +47,56 @@ class _DisconnectDeviceDialog extends StatelessWidget {
           BlocConsumer<BluetoothDisconnectionBloc, BluetoothDisconnectionState>(
         builder: (context, state) {
           if (state is DeviceDisconnected || state is DisconnectionInitial) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Disconnect smartwatches",
-                      style: TextStylesConstants.h2,
-                    ),
-                    const SizedBox(
-                      width: 40,
-                    ),
-                    InkWell(
-                      borderRadius: BorderRadius.circular(100),
-                      onTap: () {
-                        Navigator.of(context).pop(); // Closes the dialog
-                      },
-                      child: const CircleAvatar(
-                        backgroundColor: ColorConstants.black,
-                        child: Icon(
-                          Icons.close,
-                          color: Colors.white,
-                          size: 30,
+            return Container(
+              width: 400,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "Disconnect smartwatches",
+                          style: TextStylesConstants.h2,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 32),
-                Text(
-                  "Are you really sure that you want to disconnect ${name}",
-                  style: TextStylesConstants.bodyLarge,
-                ),
-                ElevatedButton(
-                  style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.red),
-                      padding:
-                          MaterialStateProperty.resolveWith<EdgeInsetsGeometry>(
-                        (Set<MaterialState> states) {
-                          return const EdgeInsets.all(20);
+                      InkWell(
+                        borderRadius: BorderRadius.circular(100),
+                        onTap: () {
+                          Navigator.of(context).pop(); // Closes the dialog
                         },
+                        child: const CircleAvatar(
+                          backgroundColor: ColorConstants.black,
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 30,
+                          ),
+                        ),
                       ),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ))),
-                  onPressed: () {
-                    var state = context.read<EmergencyContactsBloc>().state;
-                    if (state is EmergencyContactsLoaded) {
-                      BlocProvider.of<BluetoothDisconnectionBloc>(context)
-                          .add(DisconnectRequest(address!));
-                    }
-                  },
-                  child: Text(
-                    "Disconnect smartwatch",
-                    style: TextStylesConstants.bodyBase
-                        .copyWith(color: ColorConstants.white),
+                    ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: 32),
+                  Text(
+                    "Are you really sure that you want to disconnect ${name}",
+                    style: TextStylesConstants.bodyLarge,
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  CustomButton(
+                    color: Colors.red,
+                      onTap: () {
+                        var state = context.read<EmergencyContactsBloc>().state;
+                        if (state is EmergencyContactsLoaded) {
+                          BlocProvider.of<BluetoothDisconnectionBloc>(context)
+                              .add(DisconnectRequest(address!));
+                        }
+                      },
+                      text: "Disconnect smartwatch"),
+                ],
+              ),
             );
           } else {
             return const SizedCircularProgressIndicator();

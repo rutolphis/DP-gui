@@ -6,6 +6,7 @@ import 'package:gui_flutter/bloc/emergency_contacts/emergency_contacts_state.dar
 import 'package:gui_flutter/constants/colors.dart';
 import 'package:gui_flutter/constants/fonts.dart';
 import 'package:gui_flutter/models/contact.dart';
+import 'package:gui_flutter/widgets/button.dart';
 import 'package:gui_flutter/widgets/progress_indicator.dart';
 import 'package:gui_flutter/widgets/text_field.dart';
 
@@ -132,84 +133,43 @@ class EmergencyContactDialog extends StatelessWidget {
                         },
                       ),
                       const SizedBox(height: 32),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                ColorConstants.primary),
-                            padding: MaterialStateProperty.resolveWith<
-                                EdgeInsetsGeometry>(
-                              (Set<MaterialState> states) {
-                                return const EdgeInsets.all(20);
-                              },
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ))),
-                        onPressed: () {
-                          var state =
-                              context.read<EmergencyContactsBloc>().state;
-                          if (_formKey.currentState!.validate() &&
-                              state is EmergencyContactsLoaded) {
-                            if (name == '' || name == null) {
-                              context.read<EmergencyContactsBloc>().add(
-                                    AddEmergencyContact(
-                                        Contact(
-                                            name: _nameController.text,
-                                            phone: _phoneController.text),
-                                        state.vin),
-                                  );
-                            } else {
-                              final updatedContact = Contact(
-                                  name: _nameController.text,
-                                  phone: _phoneController.text);
-                              context.read<EmergencyContactsBloc>().add(
-                                    UpdateEmergencyContact(contactIndex!,
-                                        updatedContact, state.vin),
-                                  );
-                            }
+                      CustomButton(onTap: () {
+                        var state =
+                            context.read<EmergencyContactsBloc>().state;
+                        if (_formKey.currentState!.validate() &&
+                            state is EmergencyContactsLoaded) {
+                          if (name == '' || name == null) {
+                            context.read<EmergencyContactsBloc>().add(
+                              AddEmergencyContact(
+                                  Contact(
+                                      name: _nameController.text,
+                                      phone: _phoneController.text),
+                                  state.vin),
+                            );
+                          } else {
+                            final updatedContact = Contact(
+                                name: _nameController.text,
+                                phone: _phoneController.text);
+                            context.read<EmergencyContactsBloc>().add(
+                              UpdateEmergencyContact(contactIndex!,
+                                  updatedContact, state.vin),
+                            );
                           }
-                        },
-                        child: Text(
-                          submit,
-                          style: TextStylesConstants.bodyBase
-                              .copyWith(color: ColorConstants.white),
-                        ),
-                      ),
+                        }
+                      }, text: submit),
                       const SizedBox(
                         height: 24,
                       ),
                       if (name != null && name != '')
-                        ElevatedButton(
-                          style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all<Color>(Colors.red),
-                              padding: MaterialStateProperty.resolveWith<
-                                  EdgeInsetsGeometry>(
-                                (Set<MaterialState> states) {
-                                  return const EdgeInsets.all(20);
-                                },
-                              ),
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ))),
-                          onPressed: () {
-                            var state =
-                                context.read<EmergencyContactsBloc>().state;
-                            if (state is EmergencyContactsLoaded) {
-                              context.read<EmergencyContactsBloc>().add(
-                                  DeleteEmergencyContact(
-                                      contactIndex!, state.vin));
-                            }
-                          },
-                          child: Text(
-                            "Delete contact",
-                            style: TextStylesConstants.bodyBase
-                                .copyWith(color: ColorConstants.white),
-                          ),
-                        ),
+                        CustomButton(onTap: () {
+                          var state =
+                              context.read<EmergencyContactsBloc>().state;
+                          if (state is EmergencyContactsLoaded) {
+                            context.read<EmergencyContactsBloc>().add(
+                                DeleteEmergencyContact(
+                                    contactIndex!, state.vin));
+                          }
+                        }, text: "Delete contact", color: Colors.red,)
                     ],
                   ),
                 ),
