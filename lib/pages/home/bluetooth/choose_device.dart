@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_bloc.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_event.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_state.dart';
@@ -125,8 +126,8 @@ class _DeviceChoosePageState extends State<DeviceChoosePage> {
                     if (_formKey.currentState!.validate()) {
                       String authKey = _authKeyController.text;
                       Navigator.of(context).pop();
-                      BlocProvider.of<BluetoothBloc>(context)
-                          .add(ConnectDevice(selectedDevice!, authKey, isDriver));
+                      BlocProvider.of<BluetoothBloc>(context).add(
+                          ConnectDevice(selectedDevice!, authKey, isDriver));
                     }
                   },
                   text: "Pair",
@@ -141,71 +142,88 @@ class _DeviceChoosePageState extends State<DeviceChoosePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-      const Text(
-        "FINDED DEVICES",
-        style: TextStylesConstants.h2,
-      ),
-      const SizedBox(
-        height: 60,
-      ),
-      BlocBuilder<BluetoothBloc, BluetoothState>(builder: (context, state) {
-        if (state is BluetoothDataReceived && state.data.isNotEmpty) {
-          return Flexible(
+    return BlocBuilder<BluetoothBloc, BluetoothState>(builder: (context, state) {
+      if (state is BluetoothDataReceived && state.data.isNotEmpty) {
+        return Flexible(
+          child: Column(
+            children: [
+              const Text(
+                "FINDED DEVICES",
+                style: TextStylesConstants.h2,
+              ),
+              const SizedBox(
+                height: 60,
+              ),
+              Flexible(
+                child: ListView.builder(
+                  itemCount: state.data.length,
+                  itemBuilder: (context, index) {
+                    final device = state.data[index];
+                    bool isSelected =
+                        device?.address == selectedDevice?.address;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 24.0),
+                      child: BluetoothItemWidget(
+                        name: device!.name,
+                        address: device!.address,
+                        isSelected: isSelected,
+                        onTap: () {
+                          setState(() {
+                            if (selectedDevice?.address == device.address) {
+                              selectedDevice =
+                                  null; // Deselect if the same address is tapped again
+                            } else {
+                              selectedDevice = device;
+                            }
+                          });
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: CustomButton(
+                  onTap: () =>
+                      {if (selectedDevice != null) _showPairDialog()},
+                  text: "Pair device",
+                  disabled: selectedDevice == null,
+                ),
+              ),
+              const SizedBox(
+                height: 80,
+              )
+            ],
+          ),
+        );
+      } else {
+        return Flexible(
             child: Column(
-              children: [
-                Flexible(
-                  child: ListView.builder(
-                    itemCount: state.data.length,
-                    itemBuilder: (context, index) {
-                      final device = state.data[index];
-                      bool isSelected =
-                          device?.address == selectedDevice?.address;
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 24.0),
-                        child: BluetoothItemWidget(
-                          name: device!.name,
-                          address: device!.address,
-                          isSelected: isSelected,
-                          onTap: () {
-                            setState(() {
-                              if (selectedDevice?.address == device.address) {
-                                selectedDevice =
-                                    null; // Deselect if the same address is tapped again
-                              } else {
-                                selectedDevice = device;
-                              }
-                            });
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: CustomButton(
-                    onTap: () =>
-                        {if (selectedDevice != null) _showPairDialog()},
-                    text: "Pair device",
-                    disabled: selectedDevice == null,
-                  ),
-                ),
-                const SizedBox(
-                  height: 80,
-                )
-              ],
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              "NO FINDED DEVICES",
+              style: TextStylesConstants.h2,
             ),
-          );
-        } else {
-          return Flexible(child: Column(children: [
-            Icon(Icons.)
-          ],));
-        }
-      })
-    ]);
+            SvgPicture.asset(
+              'assets/icons/nothing_found.svg',
+              width: 300,
+              height: 300,
+              color: ColorConstants.black,
+            ),
+            CustomButton(
+              onTap: () =>
+                  {context.read<BluetoothBloc>().add(BluetoothScan())},
+              text: "Try Again",
+            ),
+            const SizedBox(height: 80,)
+          ],
+        ));
+      }
+    });
   }
 }

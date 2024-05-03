@@ -36,7 +36,7 @@ class VehicleDataBloc extends Bloc<VehicleDataEvent, VehicleDataState> {
 
   void _resetTimer() {
     _timer?.cancel(); // Cancel any existing timer
-    _timer = Timer(Duration(seconds: 10), () {
+    _timer = Timer(const Duration(seconds: 10), () {
       // After 10 seconds without receiving data, emit an error state
       add(VehicleDataTimeout());
     });

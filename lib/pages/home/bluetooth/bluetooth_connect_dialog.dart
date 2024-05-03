@@ -32,7 +32,14 @@ class _BluetoothConnectDialogState extends State<BluetoothConnectDialog> {
   Widget build(BuildContext context) {
     return BlocListener<BluetoothBloc, BluetoothState>(
       listener: (context, state) {
-        if (state is BluetoothDataReceived && state.data.isNotEmpty) {
+        if(state is BluetoothScanning && _pageController.page == 1) {
+          _pageController.animateToPage(
+            0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        }
+        else if (state is BluetoothDataReceived) {
           _pageController.animateToPage(
             1,
             duration: const Duration(milliseconds: 300),
