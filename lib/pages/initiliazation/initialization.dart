@@ -27,6 +27,8 @@ class InitializationPage extends StatefulWidget {
 }
 
 class _InitializationPageState extends State<InitializationPage> {
+  Timer? _closeTimer;
+
   @override
   void initState() {
     super.initState();
@@ -41,9 +43,10 @@ class _InitializationPageState extends State<InitializationPage> {
 
   _showAccidentDialog() {
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
-          Future.delayed(const Duration(seconds: 10), () {
+          _closeTimer = Timer(const Duration(seconds: 10), () {
             if (Navigator.canPop(context)) {
               Navigator.of(context).pop();
             }
@@ -120,7 +123,10 @@ class _InitializationPageState extends State<InitializationPage> {
                   ],
                 ),
               ));
-        });
+        }).then((_) {
+      _closeTimer
+          ?.cancel(); // Cancel the timer when the dialog is closed manually
+    });
   }
 
   @override

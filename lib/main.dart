@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gui_flutter/bloc/accident/accident_bloc.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_bloc.dart';
+import 'package:gui_flutter/bloc/bluetooth_connect/bluetooth_connect_bloc.dart';
 import 'package:gui_flutter/bloc/bluetooth_disconnect/bluetooth_disconnect_bloc.dart';
 import 'package:gui_flutter/bloc/emergency_contacts/emergency_contacts_bloc.dart';
 import 'package:gui_flutter/bloc/personal_info/personal_info_bloc.dart';
 import 'package:gui_flutter/bloc/socket/socket_bloc.dart';
 import 'package:gui_flutter/bloc/vehicle_data/vehicle_data_bloc.dart';
+import 'package:gui_flutter/bloc/vehicle_frame/vehicle_frame_bloc.dart';
 import 'package:gui_flutter/constants/colors.dart';
 import 'package:gui_flutter/pages/initiliazation/initialization.dart';
 import 'package:gui_flutter/widgets/navigation.dart';
@@ -33,11 +35,20 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider<BluetoothBloc>(
             create: (BuildContext context) => BluetoothBloc(
-              socketBloc: BlocProvider.of<SocketBloc>(context, listen: false),
+            ),
+          ),
+          BlocProvider<BluetoothConnectBloc>(
+            create: (BuildContext context) => BluetoothConnectBloc(
+              socketBloc: BlocProvider.of<SocketBloc>(context, listen: false), bluetoothBloc: BlocProvider.of<BluetoothBloc>(context, listen: false),
             ),
           ),
           BlocProvider<AccidentBloc>(
             create: (BuildContext context) => AccidentBloc(
+              socketBloc: BlocProvider.of<SocketBloc>(context, listen: false),
+            ),
+          ),
+          BlocProvider<VehicleFrameBloc>(
+            create: (BuildContext context) => VehicleFrameBloc(
               socketBloc: BlocProvider.of<SocketBloc>(context, listen: false),
             ),
           ),
@@ -53,7 +64,7 @@ class MyApp extends StatelessWidget {
           ),
         ],
         child: MaterialApp(
-          title: 'Flutter Demo',
+          title: 'Interior car accident GUI',
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: ColorConstants.white),
             useMaterial3: true,

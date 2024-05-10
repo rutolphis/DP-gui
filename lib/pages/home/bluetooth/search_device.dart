@@ -2,13 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_bloc.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_event.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_state.dart';
-import 'package:gui_flutter/bloc/socket/socket_bloc.dart';
-import 'package:gui_flutter/bloc/socket/socket_event.dart';
+import 'package:gui_flutter/bloc/bluetooth_connect/bluetooth_connect_bloc.dart';
+import 'package:gui_flutter/bloc/bluetooth_connect/bluetooth_connect_state.dart';
 import 'package:gui_flutter/constants/colors.dart';
 import 'package:gui_flutter/constants/fonts.dart';
+
+import '../../../bloc/bluetooth_connect/bluetooth_connect_event.dart';
 
 class DeviceSearchPage extends StatefulWidget {
   const DeviceSearchPage({Key? key}) : super(key: key);
@@ -31,7 +34,7 @@ class _DeviceSearchPageState extends State<DeviceSearchPage>
   void initState() {
     super.initState();
     _circleAnimation();
-    context.read<BluetoothBloc>().add(BluetoothScan());
+    context.read<BluetoothConnectBloc>().add(BluetoothScan());
   }
 
   void _circleAnimation() {
@@ -111,14 +114,14 @@ class _DeviceSearchPageState extends State<DeviceSearchPage>
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const Text(
-          "Searching for devices",
+          "SEARCHING FOR DEVICES",
           style: TextStylesConstants.h2,
         ),
-        BlocBuilder<BluetoothBloc, BluetoothState>(builder: (context, state) {
-          if (state is BluetoothScanning) {
+        const SizedBox(height: 50),
+        BlocBuilder<BluetoothConnectBloc, BluetoothConnectState>(builder: (context, state) {
+          if (state is BluetoothDeviceScanning) {
             return Column(
               children: [
-                const SizedBox(height: 50),
                 SizedBox(
                   height: 360,
                   width: 360,
@@ -177,10 +180,21 @@ class _DeviceSearchPageState extends State<DeviceSearchPage>
                 ),
               ],
             );
-          } else if (state is BluetoothError) {
-            return const Text("error");
-          } else if( state is BluetoothDataReceived && state.data.isEmpty){
-            return const Text("No devices found");;
+          } else if (state is BluetoothConnectError) {
+            return Column(
+              children: [
+                SvgPicture.asset(
+                  'assets/icons/failure.svg',
+                ),
+                const SizedBox(
+                  height: 24,
+                ),
+                Text("Some problem happened, try restart device!",
+                    style: TextStylesConstants.h2
+                        .copyWith(color: ColorConstants.black),
+                    textAlign: TextAlign.center),
+              ],
+            );
           }
           else {
           return Container();

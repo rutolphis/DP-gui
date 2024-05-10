@@ -178,7 +178,6 @@ class _ConnectButtonWidgetState extends State<ConnectButtonWidget> {
                 )
               ],
             ),
-            value: selectedValue,
             onChanged: (String? value) {
               setState(() {
                 selectedValue = value;

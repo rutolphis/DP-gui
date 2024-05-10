@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gui_flutter/bloc/vehicle_data/vehicle_data_bloc.dart';
 import 'package:gui_flutter/bloc/vehicle_data/vehicle_data_state.dart';
+import 'package:gui_flutter/bloc/vehicle_frame/vehicle_frame_bloc.dart';
+import 'package:gui_flutter/bloc/vehicle_frame/vehicle_frame_state.dart';
 import 'package:gui_flutter/widgets/progress_indicator.dart';
 
 class ImageContainerWidget extends StatelessWidget {
@@ -20,9 +22,9 @@ class ImageContainerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<VehicleDataBloc, VehicleDataState>(
+    return BlocBuilder<VehicleFrameBloc, VehicleFrameState>(
         builder: (context, state) {
-      if (state is VehicleDataUpdate) {
+      if (state is VehicleFrameUpdate) {
         return Container(
           height: height,
           decoration: BoxDecoration(
@@ -54,10 +56,10 @@ class ImageContainerWidget extends StatelessWidget {
               children: [
                 Positioned.fill(
                   child:
-                      state.data.image != null && state.data.image!.isNotEmpty
+                      state.frame != null && state.frame!.isNotEmpty
                           ? Image.memory(base64Decode(
-                              state.data.image!
-                            ),fit: BoxFit.cover,)
+                              state.frame!
+                            ),fit: BoxFit.cover, gaplessPlayback: true,)
                           : Image.asset(
                               "assets/images/test_photo.jpg",
                               fit: BoxFit

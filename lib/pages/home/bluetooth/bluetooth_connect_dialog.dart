@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_bloc.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_event.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_state.dart';
+import 'package:gui_flutter/bloc/bluetooth_connect/bluetooth_connect_bloc.dart';
+import 'package:gui_flutter/bloc/bluetooth_connect/bluetooth_connect_state.dart';
 import 'package:gui_flutter/constants/fonts.dart';
 import 'package:gui_flutter/pages/home/bluetooth/choose_device.dart';
 import 'package:gui_flutter/pages/home/bluetooth/connection_result.dart';
@@ -30,22 +32,22 @@ class _BluetoothConnectDialogState extends State<BluetoothConnectDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<BluetoothBloc, BluetoothState>(
+    return BlocListener<BluetoothConnectBloc, BluetoothConnectState>(
       listener: (context, state) {
-        if(state is BluetoothScanning && _pageController.page == 1) {
+        if(state is BluetoothDeviceScanning && _pageController.page == 1) {
           _pageController.animateToPage(
             0,
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
           );
         }
-        else if (state is BluetoothDataReceived) {
+        else if (state is BluetoothConnectDataReceived) {
           _pageController.animateToPage(
             1,
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
           );
-        } else if (state is DeviceConnecting) {
+        } else if (state is BluetoothDeviceConnecting) {
           _pageController.animateToPage(
             2,
             duration: const Duration(milliseconds: 300),
@@ -67,8 +69,6 @@ class _BluetoothConnectDialogState extends State<BluetoothConnectDialog> {
                 ),
                 onPressed: () {
                   Navigator.pop(context);
-                  BlocProvider.of<BluetoothBloc>(context)
-                      .add(CheckDevicesStatus());
                 },
               ),
               const Text(

@@ -35,6 +35,7 @@ class _CarStatsWidgetState extends State<CarStatsWidget> {
         brake_pedal = false;
       }
       return HomeContainerWidget(
+        height: 280,
         title: "Car stats",
         child: Column(
           children: [
@@ -54,7 +55,7 @@ class _CarStatsWidgetState extends State<CarStatsWidget> {
                         title: 'RPM',
                         value: rpm.toString(),
                       ),
-                      SizedBox(height: 10,),
+                      const SizedBox(height: 10,),
                       StatsItemWidget(
                         title: 'Steering wheel',
                         value: steering_wheel.toString(),
@@ -69,7 +70,7 @@ class _CarStatsWidgetState extends State<CarStatsWidget> {
                         title: 'Acceleration pedal',
                         value: acceleration_pedal.toString(),
                       ),
-                      SizedBox(height: 10,),
+                      const SizedBox(height: 10,),
                       StatsItemWidget(
                         title: 'Brake pedal',
                         value: brake_pedal ? "True" : "False",

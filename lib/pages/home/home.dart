@@ -54,7 +54,11 @@ class HomePage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  SpeedWidget()
+                  SpeedWidget(),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  MapWidget()
                 ],
               ),
             ),
@@ -66,17 +70,13 @@ class HomePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   ImageContainerWidget(
-                    height: 150,
+                    height: 220,
                     backgroundImage: "assets/images/test_photo.jpg",
                   ),
                   SizedBox(
                     height: 40,
                   ),
                   CarStatsWidget(),
-                  SizedBox(
-                    height: 40,
-                  ),
-                  MapWidget()
                 ],
               ),
             )

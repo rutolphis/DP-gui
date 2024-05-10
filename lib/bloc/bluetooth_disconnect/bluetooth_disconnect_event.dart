@@ -11,10 +11,10 @@ class DisconnectRequest extends BluetoothDisconnectionEvent {
   const DisconnectRequest(this.address);
 }
 
-class DisconnectedDevice extends BluetoothDisconnectionEvent {
+class DisconnectDeviceSuccess extends BluetoothDisconnectionEvent {
   final String address;
 
-  const DisconnectedDevice(this.address);
+  const DisconnectDeviceSuccess(this.address);
 }
 
 class ErrorDisconnectingDevice extends BluetoothDisconnectionEvent {

@@ -17,8 +17,8 @@ class BluetoothDisconnectionBloc extends Bloc<BluetoothDisconnectionEvent, Bluet
     socket = socketBloc.socket;
 
     socket.on('disconnection_success', (data) {
-      add(DisconnectedDevice(data['device_address']));
-      bluetoothBloc.add(DisconnectDevice(data['device_address']));
+      add(DisconnectDeviceSuccess(data['device_address']));
+      bluetoothBloc.add(DisconnectedDevice(data['device_address']));
     });
 
     socket.on('disconnection_error', (data) {
@@ -26,7 +26,7 @@ class BluetoothDisconnectionBloc extends Bloc<BluetoothDisconnectionEvent, Bluet
     });
 
     on<DisconnectRequest>(_onDisconnectRequest);
-    on<DisconnectedDevice>(_onDeviceDisconnected);
+    on<DisconnectDeviceSuccess>(_onDeviceDisconnected);
     on<ErrorDisconnectingDevice>(_onErrorDisconnectingDevice);
   }
 
@@ -35,7 +35,7 @@ class BluetoothDisconnectionBloc extends Bloc<BluetoothDisconnectionEvent, Bluet
     emit(DeviceDisconnecting());
   }
 
-  void _onDeviceDisconnected(DisconnectedDevice event, Emitter<BluetoothDisconnectionState> emit) {
+  void _onDeviceDisconnected(DisconnectDeviceSuccess event, Emitter<BluetoothDisconnectionState> emit) {
     emit(DeviceDisconnected(event.address));
   }
 

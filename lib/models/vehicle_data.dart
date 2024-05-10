@@ -7,10 +7,10 @@ class VehicleData {
   final int steeringWheelAngle;
   final Map<String, double> acceleration;
   final int timestamp;
-  final String? image;
+  final double latitude;
+  final double longitude;
 
   VehicleData({
-    required this.image,
     required this.doorStatus,
     required this.rpm,
     required this.speed,
@@ -19,6 +19,8 @@ class VehicleData {
     required this.steeringWheelAngle,
     required this.acceleration,
     required this.timestamp,
+    required this.latitude,
+    required this.longitude,
   });
 
   VehicleData.initial()
@@ -30,7 +32,8 @@ class VehicleData {
         steeringWheelAngle = 0,
         acceleration = {'x': 0.0, 'y': 0.0, 'z': 0.0},
         timestamp = DateTime.now().millisecondsSinceEpoch,
-        image = null;
+        latitude = 48.151698,
+        longitude = 17.073334;
 
   factory VehicleData.fromJson(Map<String, dynamic> json) {
     return VehicleData(
@@ -45,7 +48,9 @@ class VehicleData {
         'y': json['acceleration']['y'],
         'z': json['acceleration']['z']
       },
-      timestamp: json['timestamp'], image: json['image'],
+      timestamp: json['timestamp'],
+      latitude: json['location']['latitude'],
+      longitude: json['location']['longitude'],
     );
   }
 }

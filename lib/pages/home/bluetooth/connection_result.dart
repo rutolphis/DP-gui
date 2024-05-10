@@ -6,6 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_bloc.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_event.dart';
 import 'package:gui_flutter/bloc/bluetooth/bluetooth_state.dart';
+import 'package:gui_flutter/bloc/bluetooth_connect/bluetooth_connect_bloc.dart';
+import 'package:gui_flutter/bloc/bluetooth_connect/bluetooth_connect_state.dart';
 import 'package:gui_flutter/bloc/socket/socket_bloc.dart';
 import 'package:gui_flutter/bloc/socket/socket_event.dart';
 import 'package:gui_flutter/constants/colors.dart';
@@ -36,7 +38,6 @@ class _DeviceConnectionResultPageState
   void _closeDialog() {
     _timer = Timer(const Duration(seconds: 4), () {
       Navigator.pop(context);
-      BlocProvider.of<BluetoothBloc>(context).add(CheckDevicesStatus());
     });
   }
   @override
@@ -49,8 +50,8 @@ class _DeviceConnectionResultPageState
       const SizedBox(
         height: 60,
       ),
-      BlocBuilder<BluetoothBloc, BluetoothState>(builder: (context, state) {
-        if (state is DeviceConnecting) {
+      BlocBuilder<BluetoothConnectBloc, BluetoothConnectState>(builder: (context, state) {
+        if (state is BluetoothDeviceConnecting) {
           return Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -73,7 +74,7 @@ class _DeviceConnectionResultPageState
               ],
             ),
           );
-        } else if (state is DevicesUpdated) {
+        } else if (state is BluetoothConnectDeviceSuccess) {
           _closeDialog();
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -86,7 +87,7 @@ class _DeviceConnectionResultPageState
                 height: 24,
               ),
               Text(
-                "Device ${state.devices.last.name} has been connected!",
+                "Device ${state.device.name} has been connected!",
                 style: TextStylesConstants.h2
                     .copyWith(color: ColorConstants.black),
                 textAlign: TextAlign.center,

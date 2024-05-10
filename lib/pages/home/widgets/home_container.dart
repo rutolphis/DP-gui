@@ -26,22 +26,22 @@ class HomeContainerWidget extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.01), // 1% opacity
             blurRadius: 15,
-            offset: Offset(0, 38), // Y: 38
+            offset: const Offset(0, 38), // Y: 38
           ),
           BoxShadow(
             color: Colors.black.withOpacity(0.05), // 5% opacity
             blurRadius: 13,
-            offset: Offset(0, 22), // Y: 22
+            offset: const Offset(0, 22), // Y: 22
           ),
           BoxShadow(
             color: Colors.black.withOpacity(0.09), // 9% opacity
             blurRadius: 10,
-            offset: Offset(0, 10), // Y: 10
+            offset: const Offset(0, 10), // Y: 10
           ),
           BoxShadow(
             color: Colors.black.withOpacity(0.10), // 10% opacity
             blurRadius: 5,
-            offset: Offset(0, 2), // Y: 2
+            offset: const Offset(0, 2), // Y: 2
           ),
         ],
       ),
